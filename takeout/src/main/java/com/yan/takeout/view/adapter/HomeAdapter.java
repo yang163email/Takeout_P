@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.yan.takeout.R;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -44,7 +47,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_TITLE:
-                View titleView = LayoutInflater.from(mContext).inflate(R.layout.item_home_common, null);
+                View titleView = LayoutInflater.from(mContext).inflate(R.layout.item_title, null);
                 TitleHolder titleHolder = new TitleHolder(titleView);
                 return titleHolder;
             case TYPE_SELLER:
@@ -87,8 +90,8 @@ public class HomeAdapter extends RecyclerView.Adapter {
     }
 
     class TitleHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv)
-        TextView mTv;
+        @Bind(R.id.slider)
+        SliderLayout mSliderLayout;
 
         public TitleHolder(View view) {
             super(view);
@@ -96,7 +99,19 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
 
         public void setData(String data) {
-            mTv.setText(data);
+            HashMap<String, String> url_maps = new HashMap<String, String>();
+            url_maps.put("Hannibal", 		"http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
+            url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
+            url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
+            url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+
+            for (String desc : url_maps.keySet()) {
+                TextSliderView textSliderView = new TextSliderView(itemView.getContext());
+                textSliderView
+                        .description(desc)
+                        .image(url_maps.get(desc));
+                mSliderLayout.addSlider(textSliderView);
+            }
         }
     }
 
