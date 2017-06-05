@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yan.takeout.R;
+import com.yan.takeout.presenter.HomeFragmentPresenter;
 import com.yan.takeout.view.adapter.HomeAdapter;
 
 import java.util.ArrayList;
@@ -39,12 +41,14 @@ public class HomeFragment extends Fragment {
     LinearLayout mLlTitleContainer;
     private HomeAdapter mHomeAdapter;
     private List<String> mDatas = new ArrayList<>();
+    private HomeFragmentPresenter mHomeFragmentPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_home, null);
         ButterKnife.bind(this, rootView);
 
+        mHomeFragmentPresenter = new HomeFragmentPresenter(this);
         //设置布局管理器
         mRvHome.setLayoutManager(new LinearLayoutManager(getActivity()));
         mHomeAdapter = new HomeAdapter(getActivity());
@@ -63,9 +67,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        testData();
-        //将数据传递过去
-        mHomeAdapter.setData(mDatas);
+//        testData();
+
+        mHomeFragmentPresenter.loadHomeInfo();
 
         //显示数据后再设置滚动事件监听
         mRvHome.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -100,5 +104,37 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    /**成功响应*/
+    public void onHomeSuccess() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "响应成功", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //将数据传递过去
+        mHomeAdapter.setData(mDatas);
+    }
+
+    /**响应失败*/
+    public void onHomeFailed() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "响应失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**出错*/
+    public void onHomeError() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "没连上网", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
