@@ -2,6 +2,7 @@ package com.yan.takeout.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import butterknife.ButterKnife;
  */
 
 public class HomeAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "HomeAdapter";
+
     private Context mContext;
     private List<String> mDatas;
     private static final int TYPE_TITLE = 0;
@@ -39,15 +42,34 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_home_common, null);
-        HomeItemHolder homeItemHolder = new HomeItemHolder(itemView);
-        return homeItemHolder;
+        switch (viewType) {
+            case TYPE_TITLE:
+                View titleView = LayoutInflater.from(mContext).inflate(R.layout.item_home_common, null);
+                TitleHolder titleHolder = new TitleHolder(titleView);
+                return titleHolder;
+            case TYPE_SELLER:
+                View sellerView = LayoutInflater.from(mContext).inflate(R.layout.item_home_common, null);
+                SellerHolder homeItemHolder = new SellerHolder(sellerView);
+                return homeItemHolder;
+            default:
+                Log.d(TAG, "onCreateViewHolder: 还有第三种View。。。");
+                return null;
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        HomeItemHolder homeItemHolder = (HomeItemHolder) holder;
-        homeItemHolder.setData(mDatas.get(position));
+        int viewType = getItemViewType(position);
+        switch (viewType) {
+            case TYPE_TITLE:
+                TitleHolder titleHolder = (TitleHolder) holder;
+                titleHolder.setData("我是titleView---------------------");
+                break;
+            case TYPE_SELLER:
+                SellerHolder sellerHolder = (SellerHolder) holder;
+                sellerHolder.setData(mDatas.get(position));
+                break;
+        }
     }
 
     @Override
@@ -64,11 +86,25 @@ public class HomeAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    class HomeItemHolder extends RecyclerView.ViewHolder {
+    class TitleHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv)
         TextView mTv;
 
-        public HomeItemHolder(View view) {
+        public TitleHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
+        public void setData(String data) {
+            mTv.setText(data);
+        }
+    }
+
+    class SellerHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.tv)
+        TextView mTv;
+
+        public SellerHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
