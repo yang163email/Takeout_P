@@ -1,11 +1,20 @@
 package com.yan.takeout;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.yan.takeout.view.fragment.HomeFragment;
+import com.yan.takeout.view.fragment.MoreFragment;
+import com.yan.takeout.view.fragment.OrderFragment;
+import com.yan.takeout.view.fragment.UserFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,8 +33,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        initFragment();
         initBottomBar();
         refreshUiByIndex(0);
+    }
+
+    List<Fragment> mFragments = new ArrayList<>();
+    private void initFragment() {
+        mFragments.add(new HomeFragment());
+        mFragments.add(new OrderFragment());
+        mFragments.add(new UserFragment());
+        mFragments.add(new MoreFragment());
     }
 
     /**初始化底部按钮*/
@@ -42,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     /**通过索引刷新状态*/
     private void refreshUiByIndex(int index) {
+        //将底部导航栏设置点击样式
         int childCount = mMainBottomeSwitcherContainer.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mMainBottomeSwitcherContainer.getChildAt(i);
@@ -57,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 setEnabled(child, true);
             }
         }
+
+        //切换Fragment
+        getFragmentManager().beginTransaction().replace(R.id.main_fragment_container, mFragments.get(index)).commit();
     }
 
     /**递归调用，使容器内所有空间都设置enable*/
@@ -65,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(child instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) child;
-            int childCount = ((ViewGroup) child).getChildCount();
+            int childCount = viewGroup.getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View childAt = ((ViewGroup) child).getChildAt(i);
                 setEnabled(childAt, isEnable);
