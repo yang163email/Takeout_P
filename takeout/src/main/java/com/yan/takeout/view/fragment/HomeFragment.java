@@ -1,10 +1,12 @@
 package com.yan.takeout.view.fragment;
 
+import android.animation.ArgbEvaluator;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import butterknife.ButterKnife;
  */
 
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
 
     @Bind(R.id.rv_home)
     RecyclerView mRvHome;
@@ -51,12 +54,39 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
+    private int sumY;
+    /**最大位移值*/
+    private float distance = 250;
+    private int startColor = 0x553190E8;
+    private int endColor = 0xFF3190E8;
+    private ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         testData();
         //将数据传递过去
         mHomeAdapter.setData(mDatas);
+
+        //显示数据后再设置滚动事件监听
+        mRvHome.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "onScrolled: dy:" + dy);
+                sumY += dy;
+                int bgColor;
+                if(sumY < 0) {
+                    //初始颜色
+                    bgColor = startColor;
+                }else if(sumY > distance) {
+                    //最终颜色
+                    bgColor = endColor;
+                }else {
+                    bgColor = (int) mArgbEvaluator.evaluate(sumY / distance, startColor, endColor);
+                }
+                mLlTitleContainer.setBackgroundColor(bgColor);
+            }
+        });
     }
 
     /**使用假数据测试*/
