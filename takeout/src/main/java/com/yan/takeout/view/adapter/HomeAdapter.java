@@ -21,9 +21,20 @@ import butterknife.ButterKnife;
 public class HomeAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<String> mDatas;
+    private static final int TYPE_TITLE = 0;
+    private static final int TYPE_SELLER = 1;
 
     public HomeAdapter(Context context) {
         mContext = context;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0) {
+            return TYPE_TITLE;
+        }else {
+            return TYPE_SELLER;
+        }
     }
 
     @Override
