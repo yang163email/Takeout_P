@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -36,9 +38,9 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(position == 0) {
+        if (position == 0) {
             return TYPE_TITLE;
-        }else {
+        } else {
             return TYPE_SELLER;
         }
     }
@@ -51,7 +53,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 TitleHolder titleHolder = new TitleHolder(titleView);
                 return titleHolder;
             case TYPE_SELLER:
-                View sellerView = LayoutInflater.from(mContext).inflate(R.layout.item_home_common, null);
+                View sellerView = LayoutInflater.from(mContext).inflate(R.layout.item_seller, null);
                 SellerHolder homeItemHolder = new SellerHolder(sellerView);
                 return homeItemHolder;
             default:
@@ -100,7 +102,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
         public void setData(String data) {
             HashMap<String, String> url_maps = new HashMap<String, String>();
-            url_maps.put("Hannibal", 		"http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
+            url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
             url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
             url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
             url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
@@ -116,8 +118,20 @@ public class HomeAdapter extends RecyclerView.Adapter {
     }
 
     class SellerHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv)
-        TextView mTv;
+        @Bind(R.id.seller_logo)
+        ImageView mSellerLogo;
+        @Bind(R.id.tvCount)
+        TextView mTvCount;
+        @Bind(R.id.tv_title)
+        TextView mTvTitle;
+        @Bind(R.id.ratingBar)
+        RatingBar mRatingBar;
+        @Bind(R.id.tv_home_sale)
+        TextView mTvHomeSale;
+        @Bind(R.id.tv_home_send_price)
+        TextView mTvHomeSendPrice;
+        @Bind(R.id.tv_home_distance)
+        TextView mTvHomeDistance;
 
         public SellerHolder(View view) {
             super(view);
@@ -125,7 +139,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
 
         public void setData(String data) {
-            mTv.setText(data);
+
         }
     }
 
