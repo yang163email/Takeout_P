@@ -69,8 +69,8 @@ public class HomeAdapter extends RecyclerView.Adapter {
         int viewType = getItemViewType(position);
         switch (viewType) {
             case TYPE_TITLE:
-                TitleHolder titleHolder = (TitleHolder) holder;
-                titleHolder.setData("我是titleView---------------------");
+//                TitleHolder titleHolder = (TitleHolder) holder;
+//                titleHolder.setData("我是titleView---------------------");
                 break;
             case TYPE_SELLER:
                 SellerHolder sellerHolder = (SellerHolder) holder;
@@ -101,9 +101,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
         public TitleHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            setData();
         }
 
-        public void setData(String data) {
+        public void setData() {
             HashMap<String, String> url_maps = new HashMap<String, String>();
             url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
             url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
