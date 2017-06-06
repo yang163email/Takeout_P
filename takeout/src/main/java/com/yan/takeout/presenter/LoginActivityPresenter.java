@@ -43,5 +43,7 @@ public class LoginActivityPresenter extends NetPresenter {
 
         //保存在内存中
         TakeoutApp.sUser = user;
+
+        //保存到Ormlite数据库中
     }
 }

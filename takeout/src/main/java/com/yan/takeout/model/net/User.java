@@ -1,12 +1,23 @@
 package com.yan.takeout.model.net;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "t_user")
 public class User {
-	
+
+	//id手动赋值
+	@DatabaseField(id = true)
 	private int id;
+	@DatabaseField(columnName = "name")
 	private String name;
+	@DatabaseField(columnName = "balance")
 	private float balance;
+	@DatabaseField(columnName = "discount")
 	private int discount;
+	@DatabaseField(columnName = "integral")
 	private int integral;
+	@DatabaseField(columnName = "phone")
 	private String phone;
 
 	public int getId() {
