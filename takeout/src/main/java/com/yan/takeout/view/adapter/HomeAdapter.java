@@ -143,6 +143,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
 
         public void setData(Seller seller) {
             mTvTitle.setText(seller.getName());
+            mTvHomeSale.setText("月售" + seller.getSale() + "单");
+            mRatingBar.setRating(Float.parseFloat(seller.getScore()));
+            mTvHomeSendPrice.setText("￥" + seller.getSendPrice() + "起送/配送费￥" + seller.getDeliveryFee());
+            mTvHomeDistance.setText(seller.getDistance());
         }
     }
 
