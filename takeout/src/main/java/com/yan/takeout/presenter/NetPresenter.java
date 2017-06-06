@@ -48,5 +48,5 @@ public abstract class NetPresenter {
 
     protected abstract void onServerBug(int code);
 
-    protected abstract void onSuccess(String data);
+    protected abstract void onSuccess(String jsonData);
 }

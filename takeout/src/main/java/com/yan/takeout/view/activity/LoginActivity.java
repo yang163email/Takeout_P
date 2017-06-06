@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yan.takeout.R;
+import com.yan.takeout.presenter.LoginActivityPresenter;
 import com.yan.takeout.util.SMSUtil;
 
 import butterknife.Bind;
@@ -27,6 +29,7 @@ import cn.smssdk.SMSSDK;
  */
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
 
     @Bind(R.id.iv_user_back)
     ImageView mIvUserBack;
@@ -40,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEtUserCode;
     @Bind(R.id.login)
     TextView mLogin;
+    private LoginActivityPresenter mLoginActivityPresenter;
+    private String mPhone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        SMSSDK.initSDK(this, "1e1a9e5d7c0fd", "cfa0964301f7aae44135ad2f75471594");
+        mLoginActivityPresenter = new LoginActivityPresenter(this);
+        SMSSDK.initSDK(this, "1e78f5475c7a0", "fad8127112d24893c09dbd8693072750");
 
         SMSSDK.registerEventHandler(mEventHandler);
     }
@@ -61,27 +67,32 @@ public class LoginActivity extends AppCompatActivity {
                 //回调完成
                 if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                     //提交验证码成功
+                    Log.d(TAG, "afterEvent: 提交验证码成功");
+                    mLoginActivityPresenter.loginByPhone(mPhone, 2);
+
                 } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                     //获取验证码成功
+                    Log.d(TAG, "afterEvent: 获取验证码成功");
                 } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                     //返回支持发送验证码的国家列表
                 }
             } else {
                 ((Throwable) data).printStackTrace();
+                Log.d(TAG, "afterEvent: 获取验证码失败");
             }
         }
     };
 
     @OnClick({R.id.tv_user_code, R.id.login})
     public void onViewClicked(View view) {
-        String phone = mEtUserPhone.getText().toString().trim();
-        if(!SMSUtil.judgePhoneNums(this, phone)) {
+        mPhone = mEtUserPhone.getText().toString().trim();
+        if(!SMSUtil.judgePhoneNums(this, mPhone)) {
             return;
         }
         switch (view.getId()) {
             case R.id.tv_user_code:
                 //发送获取验证码
-                SMSSDK.getVerificationCode("86", phone);
+                SMSSDK.getVerificationCode("86", mPhone);
                 mTvUserCode.setEnabled(false);
                 new Thread(new CutDownTask()).start();
                 break;
@@ -92,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                SMSSDK.submitVerificationCode("86", phone, code);
+                SMSSDK.submitVerificationCode("86", mPhone, code);
                 break;
         }
     }
@@ -122,8 +133,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void run() {
             for (; time > 0; time--) {
-                SystemClock.sleep(999);
                 mHandler.sendEmptyMessage(TIME_MAX);
+                SystemClock.sleep(999);
             }
             mHandler.sendEmptyMessage(TIME_IS_OUT);
         }
