@@ -106,8 +106,9 @@ public class HomeFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    /**成功响应*/
-    public void onHomeSuccess() {
+    /**成功响应
+     * @param data*/
+    public void onHomeSuccess(String data) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -118,8 +119,9 @@ public class HomeFragment extends Fragment {
         mHomeAdapter.setData(mDatas);
     }
 
-    /**响应失败*/
-    public void onHomeFailed() {
+    /**响应失败
+     * @param code*/
+    public void onHomeFailed(int code) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -128,8 +130,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /**出错*/
-    public void onHomeError() {
+    /**出错
+     * @param message*/
+    public void onHomeError(String message) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
