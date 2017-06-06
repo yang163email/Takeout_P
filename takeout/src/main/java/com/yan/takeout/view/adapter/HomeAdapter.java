@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.yan.takeout.R;
-import com.yan.takeout.bean.net.Seller;
+import com.yan.takeout.model.net.Seller;
 
 import java.util.ArrayList;
 import java.util.HashMap;

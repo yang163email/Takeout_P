@@ -2,8 +2,8 @@ package com.yan.takeout.presenter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.yan.takeout.bean.net.ResponseInfo;
-import com.yan.takeout.bean.net.Seller;
+import com.yan.takeout.model.net.ResponseInfo;
+import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.view.fragment.HomeFragment;
 
 import org.json.JSONException;

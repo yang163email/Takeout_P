@@ -1,6 +1,6 @@
 package com.yan.takeout.presenter;
 
-import com.yan.takeout.bean.net.ResponseInfo;
+import com.yan.takeout.model.net.ResponseInfo;
 import com.yan.takeout.util.Constant;
 
 import retrofit2.Call;

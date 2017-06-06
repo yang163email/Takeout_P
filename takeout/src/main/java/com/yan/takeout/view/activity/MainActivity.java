@@ -1,4 +1,4 @@
-package com.yan.takeout;
+package com.yan.takeout.view.activity;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.yan.takeout.R;
 import com.yan.takeout.view.fragment.HomeFragment;
 import com.yan.takeout.view.fragment.MoreFragment;
 import com.yan.takeout.view.fragment.OrderFragment;

@@ -1,4 +1,4 @@
-package com.yan.takeout.bean.net;
+package com.yan.takeout.model.net;
 
 import android.content.pm.ActivityInfo;
 

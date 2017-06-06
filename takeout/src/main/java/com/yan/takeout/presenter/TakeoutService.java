@@ -1,6 +1,6 @@
 package com.yan.takeout.presenter;
 
-import com.yan.takeout.bean.net.ResponseInfo;
+import com.yan.takeout.model.net.ResponseInfo;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

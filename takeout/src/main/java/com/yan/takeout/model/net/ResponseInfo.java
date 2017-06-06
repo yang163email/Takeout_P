@@ -1,4 +1,4 @@
-package com.yan.takeout.bean.net;
+package com.yan.takeout.model.net;
 
 public class ResponseInfo {
 	//服务器开发者定义的数据结构

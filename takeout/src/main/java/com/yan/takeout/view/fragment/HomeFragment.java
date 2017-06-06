@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yan.takeout.R;
-import com.yan.takeout.bean.net.Seller;
+import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.presenter.HomeFragmentPresenter;
 import com.yan.takeout.view.adapter.HomeAdapter;
 
