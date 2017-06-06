@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yan.takeout.R;
+import com.yan.takeout.bean.net.Seller;
 import com.yan.takeout.presenter.HomeFragmentPresenter;
 import com.yan.takeout.view.adapter.HomeAdapter;
 
@@ -106,19 +107,6 @@ public class HomeFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    /**成功响应
-     * @param data*/
-    public void onHomeSuccess(String data) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), "响应成功", Toast.LENGTH_SHORT).show();
-            }
-        });
-        //将数据传递过去
-        mHomeAdapter.setData(mDatas);
-    }
-
     /**响应失败
      * @param code*/
     public void onHomeFailed(int code) {
@@ -139,5 +127,10 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "没连上网", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**成功响应*/
+    public void onHomeSuccess(List<Seller> nearbySellerList, List<Seller> otherSellerList) {
+        mHomeAdapter.setData(nearbySellerList, otherSellerList);
     }
 }

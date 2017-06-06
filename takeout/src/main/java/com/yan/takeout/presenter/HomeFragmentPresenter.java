@@ -1,7 +1,15 @@
 package com.yan.takeout.presenter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.yan.takeout.bean.net.ResponseInfo;
+import com.yan.takeout.bean.net.Seller;
 import com.yan.takeout.view.fragment.HomeFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -33,6 +41,19 @@ public class HomeFragmentPresenter extends NetPresenter {
 
     @Override
     protected void onSuccess(String data) {
-        mHomeFragment.onHomeSuccess(data);
+        Gson gson = new Gson();
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            String nearby = jsonObject.getString("nearbySellerList");
+            List<Seller> nearbySellerList = gson.fromJson(nearby, new TypeToken<List<Seller>>(){}.getType());
+
+            String other = jsonObject.getString("otherSellerList");
+            List<Seller> otherSellerList = gson.fromJson(other, new TypeToken<List<Seller>>(){}.getType());
+
+            mHomeFragment.onHomeSuccess(nearbySellerList, otherSellerList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

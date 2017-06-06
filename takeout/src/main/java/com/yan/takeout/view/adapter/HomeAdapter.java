@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.yan.takeout.R;
+import com.yan.takeout.bean.net.Seller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     private static final String TAG = "HomeAdapter";
 
     private Context mContext;
-    private List<String> mDatas;
+    private List<Seller> mDatas = new ArrayList<>();
     private static final int TYPE_TITLE = 0;
     private static final int TYPE_SELLER = 1;
 
@@ -85,9 +87,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
         return mDatas.size();
     }
 
-    public void setData(List<String> datas) {
-        //接收数据并刷新
-        mDatas = datas;
+    public void setData(List<Seller> nearbySellerList, List<Seller> otherSellerList) {
+        mDatas.clear();
+        mDatas.addAll(nearbySellerList);
+        mDatas.addAll(otherSellerList);
         notifyDataSetChanged();
     }
 
@@ -138,8 +141,8 @@ public class HomeAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, view);
         }
 
-        public void setData(String data) {
-
+        public void setData(Seller seller) {
+            mTvTitle.setText(seller.getName());
         }
     }
 
