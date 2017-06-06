@@ -1,10 +1,9 @@
 package com.yan.takeout.presenter;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.yan.takeout.model.net.ResponseInfo;
 import com.yan.takeout.model.net.User;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.LoginActivity;
 
 import retrofit2.Call;
@@ -41,6 +40,8 @@ public class LoginActivityPresenter extends NetPresenter {
     protected void onSuccess(String jsonData) {
         Gson gson = new Gson();
         User user = gson.fromJson(jsonData, User.class);
-        Log.d(TAG, "onSuccess: userId:" + user.getId());
+
+        //保存在内存中
+        TakeoutApp.sUser = user;
     }
 }
