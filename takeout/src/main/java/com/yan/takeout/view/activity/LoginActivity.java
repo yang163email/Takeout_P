@@ -6,12 +6,15 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yan.takeout.R;
+import com.yan.takeout.util.SMSUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -72,6 +75,9 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick({R.id.tv_user_code, R.id.login})
     public void onViewClicked(View view) {
         String phone = mEtUserPhone.getText().toString().trim();
+        if(!SMSUtil.judgePhoneNums(this, phone)) {
+            return;
+        }
         switch (view.getId()) {
             case R.id.tv_user_code:
                 //发送获取验证码
@@ -82,6 +88,10 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.login:
                 //登录验证
                 String code = mEtUserCode.getText().toString().trim();
+                if(TextUtils.isEmpty(code)) {
+                    Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 SMSSDK.submitVerificationCode("86", phone, code);
                 break;
         }
