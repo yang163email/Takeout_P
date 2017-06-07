@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yan.takeout.R;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.LoginActivity;
 
 import butterknife.Bind;
@@ -45,6 +46,24 @@ public class UserFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int id = TakeoutApp.sUser.getId();
+        if(id == -1) {
+            //默认未登录状态
+            mLogin.setVisibility(View.VISIBLE);
+            mLlUserinfo.setVisibility(View.GONE);
+        }else {
+            //已经登录
+            mLogin.setVisibility(View.GONE);
+            mLlUserinfo.setVisibility(View.VISIBLE);
+            //设置数据
+            mUsername.setText("欢迎您," + TakeoutApp.sUser.getName());
+            mPhone.setText(TakeoutApp.sUser.getPhone());
+        }
     }
 
     @Override

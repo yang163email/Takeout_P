@@ -71,23 +71,29 @@ public class LoginActivityPresenter extends NetPresenter {
             if (oldUser != null) {
                 //老用户
                 dao.update(user);
+                Log.d(TAG, "onSuccess: 已经有此用户，更新信息");
             } else {
                 //新用户
                 dao.create(user);
+                Log.d(TAG, "onSuccess: 创建新用户");
             }
 //            dao.createIfNotExists(user);
 
-            Log.d(TAG, "onSuccess: 数据表创建成功");
             //提交事务
             databaseConnection.commit(startPoint);
+            //登录成功
+            mLoginActivity.onLoginSuccess();
+            Log.d(TAG, "onSuccess: 提交事务");
         } catch (SQLException e) {
             e.printStackTrace();
             Log.d(TAG, "onSuccess: ormlite异常");
             try {
                 //回滚记录点
                 databaseConnection.rollback(startPoint);
+                Log.d(TAG, "onSuccess: 异常，回滚事务");
             } catch (SQLException e1) {
                 e1.printStackTrace();
+                mLoginActivity.onLoginFailed();
             }
         }
     }

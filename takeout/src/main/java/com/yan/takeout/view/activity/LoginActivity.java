@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yan.takeout.R;
 import com.yan.takeout.presenter.LoginActivityPresenter;
@@ -126,6 +127,16 @@ public class LoginActivity extends AppCompatActivity {
     private int time = 60;
     private static final int TIME_MAX = 0;
     private static final int TIME_IS_OUT = 1;
+
+    /**登录成功*/
+    public void onLoginSuccess() {
+        finish();
+    }
+
+    /**登录失败*/
+    public void onLoginFailed() {
+        Toast.makeText(this, "请检查您的登录验证码", Toast.LENGTH_SHORT).show();
+    }
 
     private class CutDownTask implements Runnable {
         @Override
