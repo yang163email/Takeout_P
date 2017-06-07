@@ -1,10 +1,18 @@
 package com.yan.takeout.presenter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.j256.ormlite.android.AndroidDatabaseConnection;
+import com.j256.ormlite.dao.Dao;
+import com.yan.takeout.model.dao.TakeoutOpenHelper;
 import com.yan.takeout.model.net.ResponseInfo;
 import com.yan.takeout.model.net.User;
 import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.LoginActivity;
+
+import java.sql.SQLException;
+import java.sql.Savepoint;
 
 import retrofit2.Call;
 
@@ -45,5 +53,42 @@ public class LoginActivityPresenter extends NetPresenter {
         TakeoutApp.sUser = user;
 
         //保存到Ormlite数据库中
+        TakeoutOpenHelper takeoutOpenHelper = new TakeoutOpenHelper(mLoginActivity);
+
+        //开启事务
+        AndroidDatabaseConnection databaseConnection = new AndroidDatabaseConnection(
+                takeoutOpenHelper.getWritableDatabase(), true);
+        Savepoint startPoint = null;
+        try {
+            //设置保存点
+            startPoint = databaseConnection.setSavePoint("start");
+            //取消自动提交
+            databaseConnection.setAutoCommit(false);
+
+            Dao<User, Integer> dao = takeoutOpenHelper.getDao(User.class);
+            //查询记录
+            User oldUser = dao.queryForId(36);
+            if (oldUser != null) {
+                //老用户
+                dao.update(user);
+            } else {
+                //新用户
+                dao.create(user);
+            }
+//            dao.createIfNotExists(user);
+
+            Log.d(TAG, "onSuccess: 数据表创建成功");
+            //提交事务
+            databaseConnection.commit(startPoint);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.d(TAG, "onSuccess: ormlite异常");
+            try {
+                //回滚记录点
+                databaseConnection.rollback(startPoint);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 }

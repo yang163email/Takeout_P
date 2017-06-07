@@ -6,17 +6,14 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yan.takeout.R;
 import com.yan.takeout.presenter.LoginActivityPresenter;
-import com.yan.takeout.util.SMSUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -68,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                     //提交验证码成功
                     Log.d(TAG, "afterEvent: 提交验证码成功");
-                    mLoginActivityPresenter.loginByPhone(mPhone, 2);
+//                    mLoginActivityPresenter.loginByPhone(mPhone, 2);
 
                 } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                     //获取验证码成功
@@ -86,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick({R.id.tv_user_code, R.id.login})
     public void onViewClicked(View view) {
         mPhone = mEtUserPhone.getText().toString().trim();
-        if(!SMSUtil.judgePhoneNums(this, mPhone)) {
-            return;
-        }
+//        if(!SMSUtil.judgePhoneNums(this, mPhone)) {
+//            return;
+//        }
         switch (view.getId()) {
             case R.id.tv_user_code:
                 //发送获取验证码
@@ -98,12 +95,13 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case R.id.login:
                 //登录验证
-                String code = mEtUserCode.getText().toString().trim();
-                if(TextUtils.isEmpty(code)) {
-                    Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                SMSSDK.submitVerificationCode("86", mPhone, code);
+//                String code = mEtUserCode.getText().toString().trim();
+//                if(TextUtils.isEmpty(code)) {
+//                    Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                SMSSDK.submitVerificationCode("86", mPhone, code);
+                mLoginActivityPresenter.loginByPhone(mPhone, 2);
                 break;
         }
     }
