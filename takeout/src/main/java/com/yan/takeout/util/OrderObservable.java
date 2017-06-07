@@ -1,5 +1,10 @@
 package com.yan.takeout.util;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 /**
@@ -27,4 +32,29 @@ public class OrderObservable extends Observable {
 
     public static final String ORDERTYPE_SERVED = "50";
     public static final String ORDERTYPE_CANCELLEDORDER = "60";
+
+    public void newMsgComing(String extras) {
+        //解析获取到的json数据并保存
+        Map<String, String> data = processJson(extras);
+
+        //通知观察者内容发生变化
+        setChanged();
+        //发生变化的内容
+        notifyObservers(data);
+    }
+
+    private Map<String, String> processJson(String extras) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(extras);
+            String orderId = jsonObject.getString("orderId");
+            String type = jsonObject.getString("type");
+            map.put("orderId", orderId);
+            map.put("type", type);
+            return map;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
