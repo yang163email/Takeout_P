@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.Order;
+import com.yan.takeout.util.OrderObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class OrderRvAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_order_item, null);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_order_item, parent, false);
         OrderItemHolder orderItemHolder = new OrderItemHolder(itemView);
         return orderItemHolder;
     }
@@ -54,6 +55,42 @@ public class OrderRvAdapter extends RecyclerView.Adapter {
             return mOrderList.size();
         }
         return 0;
+    }
+
+    private String getOrderTypeInfo(String type) {
+        /**
+         * 订单状态
+         * 1 未支付 2 已提交订单 3 商家接单  4 配送中,等待送达 5已送达 6 取消的订单
+         */
+//            public static final String ORDERTYPE_UNPAYMENT = "10";
+//            public static final String ORDERTYPE_SUBMIT = "20";
+//            public static final String ORDERTYPE_RECEIVEORDER = "30";
+//            public static final String ORDERTYPE_DISTRIBUTION = "40";
+//            public static final String ORDERTYPE_SERVED = "50";
+//            public static final String ORDERTYPE_CANCELLEDORDER = "60";
+
+        String typeInfo = "";
+        switch (type) {
+            case OrderObservable.ORDERTYPE_UNPAYMENT:
+                typeInfo = "未支付";
+                break;
+            case OrderObservable.ORDERTYPE_SUBMIT:
+                typeInfo = "已提交订单";
+                break;
+            case OrderObservable.ORDERTYPE_RECEIVEORDER:
+                typeInfo = "商家接单";
+                break;
+            case OrderObservable.ORDERTYPE_DISTRIBUTION:
+                typeInfo = "配送中";
+                break;
+            case OrderObservable.ORDERTYPE_SERVED:
+                typeInfo = "已送达";
+                break;
+            case OrderObservable.ORDERTYPE_CANCELLEDORDER:
+                typeInfo = "取消的订单";
+                break;
+        }
+        return typeInfo;
     }
 
     class OrderItemHolder extends RecyclerView.ViewHolder{
@@ -79,7 +116,7 @@ public class OrderRvAdapter extends RecyclerView.Adapter {
 
         public void setData(Order order) {
             mTvOrderItemSellerName.setText(order.seller.getName());
-            mTvOrderItemType.setText(order.type + "");
+            mTvOrderItemType.setText(getOrderTypeInfo(order.type));
         }
     }
 }

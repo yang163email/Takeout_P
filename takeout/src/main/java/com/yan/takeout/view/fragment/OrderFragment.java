@@ -70,5 +70,14 @@ public class OrderFragment extends Fragment {
 
     public void onLoadOrderSuccess(List<Order> orderList) {
         mOrderRvAdapter.setOrderList(orderList);
+
+        mSrlOrder.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                int id = TakeoutApp.sUser.getId();
+                mOrderFragmentPresenter.getOrderList(id + "");
+                mSrlOrder.setRefreshing(false);
+            }
+        });
     }
 }
