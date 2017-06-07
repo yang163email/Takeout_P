@@ -17,4 +17,7 @@ public interface TakeoutService {
 
     @GET("login")
     Call<ResponseInfo> loginByPhone(@Query("phone") String phone, @Query("type")int type);
+
+    @GET("order")
+    Call<ResponseInfo> getOrderList(@Query("userId") String userId);
 }
