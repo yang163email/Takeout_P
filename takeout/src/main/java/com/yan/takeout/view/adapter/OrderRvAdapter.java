@@ -15,6 +15,7 @@ import com.yan.takeout.util.OrderObservable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -39,6 +40,23 @@ public class OrderRvAdapter extends RecyclerView.Adapter implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         Log.d(TAG, "update: 收到自定义消息了");
+
+        Map<String, String> data = (Map<String, String>) arg;
+        String orderId = data.get("orderId");
+        String type = data.get("type");
+
+        int index = -1;
+        for (int i = 0; i < mOrderList.size(); i++) {
+            Order order = mOrderList.get(i);
+            if(order.id.equals(orderId)) {
+                order.type = type;
+                index = i;
+            }
+        }
+        if(index != -1) {
+            //数据发生了变化
+            notifyItemChanged(index);
+        }
     }
 
     public void setOrderList(List<Order> orderList) {
