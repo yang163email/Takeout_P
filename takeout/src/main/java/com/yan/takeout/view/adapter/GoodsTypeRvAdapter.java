@@ -60,7 +60,7 @@ public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
     }
 
     /**当前选中的位置*/
-    private int mSelectedPosition = 0;
+    public int mSelectedPosition = 0;
 
     class ViewHolder extends RecyclerView.ViewHolder{
         private final View mView;

@@ -1,5 +1,7 @@
 package com.yan.takeout.presenter;
 
+import android.widget.AbsListView;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yan.takeout.model.net.GoodsInfo;
@@ -22,6 +24,7 @@ import retrofit2.Call;
 public class GoodsFragmentPresenter extends NetPresenter {
     private GoodsFragment mGoodsFragment;
     private List<GoodsInfo> mAllGoodsTypeInfo;
+    private List<GoodsTypeInfo> mGoodsTypeInfos;
 
     public GoodsFragmentPresenter(GoodsFragment goodsFragment) {
         mGoodsFragment = goodsFragment;
@@ -50,11 +53,11 @@ public class GoodsFragmentPresenter extends NetPresenter {
             JSONObject jsonObject = new JSONObject(jsonData);
             String listStr = jsonObject.getString("list");
 
-            List<GoodsTypeInfo> goodsTypeInfos = gson.fromJson(listStr, new TypeToken<List<GoodsTypeInfo>>(){}.getType());
-            mGoodsFragment.onGoodsTypeSuccess(goodsTypeInfos);
+            mGoodsTypeInfos = gson.fromJson(listStr, new TypeToken<List<GoodsTypeInfo>>(){}.getType());
+            mGoodsFragment.onGoodsTypeSuccess(mGoodsTypeInfos);
 
-            for (int i = 0; i < goodsTypeInfos.size(); i++) {
-                GoodsTypeInfo goodsTypeInfo = goodsTypeInfos.get(i);
+            for (int i = 0; i < mGoodsTypeInfos.size(); i++) {
+                GoodsTypeInfo goodsTypeInfo = mGoodsTypeInfos.get(i);
                 List<GoodsInfo> goodsTypeInfoList = goodsTypeInfo.getList();
                 for (int j = 0; j < goodsTypeInfoList.size(); j++) {
                     GoodsInfo goodsInfo = goodsTypeInfoList.get(j);
@@ -65,9 +68,45 @@ public class GoodsFragmentPresenter extends NetPresenter {
                 }
             }
             mGoodsFragment.onAllGoodsSuccess(mAllGoodsTypeInfo);
+
+            mGoodsFragment.mSlhlv.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    //拿到滚动之前左侧选中的位置
+                    int oldPos = mGoodsFragment.mGoodsTypeRvAdapter.mSelectedPosition;
+                    //根据第一条可见item获取id
+                    int newTypeId = mAllGoodsTypeInfo.get(firstVisibleItem).getTypeId();
+                    int newPos = getTypePosByTypeId(newTypeId);
+
+                    if(oldPos != newPos) {
+                        //切换了类别
+                        mGoodsFragment.mGoodsTypeRvAdapter.mSelectedPosition = newPos;
+                        mGoodsFragment.mGoodsTypeRvAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**循环左侧列表*/
+    private int getTypePosByTypeId(int newTypeId) {
+        int position = 0;
+        for (int i = 0; i < mGoodsTypeInfos.size(); i++) {
+            GoodsTypeInfo goodsTypeInfo = mGoodsTypeInfos.get(i);
+            int id = goodsTypeInfo.getId();
+            if(id == newTypeId) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     /**通过typeId拿到商品的位置*/

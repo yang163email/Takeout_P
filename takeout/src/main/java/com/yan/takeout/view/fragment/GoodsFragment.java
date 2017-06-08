@@ -33,7 +33,7 @@ public class GoodsFragment extends Fragment {
     @Bind(R.id.slhlv)
     public StickyListHeadersListView mSlhlv;
 
-    private GoodsTypeRvAdapter mGoodsTypeRvAdapter;
+    public GoodsTypeRvAdapter mGoodsTypeRvAdapter;
     public GoodsFragmentPresenter mGoodsFragmentPresenter;
     private GoodsAdapter mGoodsAdapter;
 
