@@ -57,6 +57,9 @@ public class GoodsFragmentPresenter extends NetPresenter {
                 List<GoodsInfo> goodsTypeInfoList = goodsTypeInfo.getList();
                 for (int j = 0; j < goodsTypeInfoList.size(); j++) {
                     GoodsInfo goodsInfo = goodsTypeInfoList.get(j);
+                    //将类型id、名称设置进去
+                    goodsInfo.setTypeId(goodsTypeInfo.getId());
+                    goodsInfo.setTypeName(goodsTypeInfo.getName());
                     allGoodsTypeInfo.add(goodsInfo);
                 }
             }

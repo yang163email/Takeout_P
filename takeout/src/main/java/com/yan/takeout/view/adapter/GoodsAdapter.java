@@ -38,14 +38,18 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
 
     @Override
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
-        TextView textView = new TextView(mContext);
-        textView.setText("测试头1");
-        return textView;
+        GoodsInfo goodsInfo = mGoodsInfoList.get(position);
+
+        View headerView = LayoutInflater.from(mContext).inflate(R.layout.item_type_header, parent, false);
+
+        ((TextView) headerView).setText(goodsInfo.getTypeName());
+        return headerView;
     }
 
     @Override
     public long getHeaderId(int position) {
-        return 0;
+        GoodsInfo goodsInfo = mGoodsInfoList.get(position);
+        return goodsInfo.getTypeId();
     }
 
     @Override
