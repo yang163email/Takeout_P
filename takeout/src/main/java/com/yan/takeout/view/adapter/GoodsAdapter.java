@@ -1,6 +1,7 @@
 package com.yan.takeout.view.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,7 +119,15 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             mTvZucheng.setText(goodsInfo.getForm());
             mTvYueshaoshounum.setText("月售" + goodsInfo.getMonthSaleNum() + "份");
             mTvNewprice.setText(PriceFormater.format(Float.parseFloat(goodsInfo.getNewPrice())));
-            mTvOldprice.setText(PriceFormater.format(goodsInfo.getOldPrice()));
+
+            if(goodsInfo.getOldPrice() == 0) {
+                mTvOldprice.setVisibility(View.GONE);
+            }else {
+                mTvOldprice.setVisibility(View.VISIBLE);
+                mTvOldprice.setText(PriceFormater.format(goodsInfo.getOldPrice()));
+                //废除线
+                mTvOldprice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
     }
 }
