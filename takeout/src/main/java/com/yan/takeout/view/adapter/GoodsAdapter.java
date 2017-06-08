@@ -1,6 +1,7 @@
 package com.yan.takeout.view.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsInfo;
+import com.yan.takeout.util.PriceFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
  */
 
 public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapter {
+    private static final String TAG = "GoodsAdapter";
+
     private Context mContext;
     private List<GoodsInfo> mGoodsInfoList = new ArrayList<>();
 
@@ -77,7 +82,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.setData(position);
+        viewHolder.setData(mGoodsInfoList.get(position));
         return convertView;
     }
 
@@ -105,9 +110,15 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             ButterKnife.bind(this, view);
         }
 
-        public void setData(int position) {
-            GoodsInfo goodsInfo = mGoodsInfoList.get(position);
+        public void setData(GoodsInfo goodsInfo) {
             mTvName.setText(goodsInfo.getName());
+
+            Log.d(TAG, "setData: " + goodsInfo.getIcon());
+            Picasso.with(mContext).load(goodsInfo.getIcon()).into(mIvIcon);
+            mTvZucheng.setText(goodsInfo.getForm());
+            mTvYueshaoshounum.setText("月售" + goodsInfo.getMonthSaleNum() + "份");
+            mTvNewprice.setText(PriceFormater.format(Float.parseFloat(goodsInfo.getNewPrice())));
+            mTvOldprice.setText(PriceFormater.format(goodsInfo.getOldPrice()));
         }
     }
 }
