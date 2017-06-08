@@ -1,6 +1,7 @@
 package com.yan.takeout.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.Seller;
+import com.yan.takeout.view.activity.BusinessActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,15 +28,15 @@ import butterknife.ButterKnife;
  * Created by 楠GG on 2017/6/5.
  */
 
-public class HomeAdapter extends RecyclerView.Adapter {
-    private static final String TAG = "HomeAdapter";
+public class HomeRvAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "HomeRvAdapter";
 
     private Context mContext;
     private List<Seller> mDatas = new ArrayList<>();
     private static final int TYPE_TITLE = 0;
     private static final int TYPE_SELLER = 1;
 
-    public HomeAdapter(Context context) {
+    public HomeRvAdapter(Context context) {
         mContext = context;
     }
 
@@ -140,6 +142,13 @@ public class HomeAdapter extends RecyclerView.Adapter {
         public SellerHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, BusinessActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
         public void setData(Seller seller) {

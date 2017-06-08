@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.presenter.HomeFragmentPresenter;
-import com.yan.takeout.view.adapter.HomeAdapter;
+import com.yan.takeout.view.adapter.HomeRvAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
     LinearLayout mLlTitleSearch;
     @Bind(R.id.ll_title_container)
     LinearLayout mLlTitleContainer;
-    private HomeAdapter mHomeAdapter;
+    private HomeRvAdapter mHomeRvAdapter;
     private List<String> mDatas = new ArrayList<>();
     private HomeFragmentPresenter mHomeFragmentPresenter;
 
@@ -52,9 +52,9 @@ public class HomeFragment extends Fragment {
         mHomeFragmentPresenter = new HomeFragmentPresenter(this);
         //设置布局管理器
         mRvHome.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mHomeAdapter = new HomeAdapter(getActivity());
+        mHomeRvAdapter = new HomeRvAdapter(getActivity());
         //设置adapter
-        mRvHome.setAdapter(mHomeAdapter);
+        mRvHome.setAdapter(mHomeRvAdapter);
 
         return rootView;
     }
@@ -131,6 +131,6 @@ public class HomeFragment extends Fragment {
 
     /**成功响应*/
     public void onHomeSuccess(List<Seller> nearbySellerList, List<Seller> otherSellerList) {
-        mHomeAdapter.setData(nearbySellerList, otherSellerList);
+        mHomeRvAdapter.setData(nearbySellerList, otherSellerList);
     }
 }
