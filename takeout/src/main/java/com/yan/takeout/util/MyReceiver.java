@@ -26,6 +26,8 @@ public class MyReceiver extends BroadcastReceiver {
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         Log.d(TAG, "onReceive: extras:" + extras);
 
-        OrderObservable.getInstance().newMsgComing(extras);
+        if(extras != null) {
+            OrderObservable.getInstance().newMsgComing(extras);
+        }
     }
 }

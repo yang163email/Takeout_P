@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.yan.takeout.R;
+import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.view.adapter.BusinessFragmentPagerAdapter;
 import com.yan.takeout.view.fragment.CommentFragment;
 import com.yan.takeout.view.fragment.GoodsFragment;
@@ -62,6 +63,7 @@ public class BusinessActivity extends Activity {
     TabLayout mTabs;
 
     private List<Fragment> mFragmentList = new ArrayList<>();
+    public Seller mSeller;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class BusinessActivity extends Activity {
         setContentView(R.layout.activity_business);
         ButterKnife.bind(this);
 
+        processIntent();
         initFragments();
         BusinessFragmentPagerAdapter businessFragmentPagerAdapter =
                 new BusinessFragmentPagerAdapter(getFragmentManager());
@@ -77,6 +80,12 @@ public class BusinessActivity extends Activity {
 
         //绑定指示器与ViewPager
         mTabs.setupWithViewPager(mVp);
+    }
+
+    private void processIntent() {
+        if(getIntent() != null) {
+            mSeller = (Seller) getIntent().getSerializableExtra("seller");
+        }
     }
 
     private void initFragments() {

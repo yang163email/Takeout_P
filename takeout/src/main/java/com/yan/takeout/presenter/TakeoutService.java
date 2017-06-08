@@ -20,4 +20,7 @@ public interface TakeoutService {
 
     @GET("order")
     Call<ResponseInfo> getOrderList(@Query("userId") String userId);
+
+    @GET("business")
+    Call<ResponseInfo> getBusinessInfo(@Query("sellerId") int sellerId);
 }

@@ -56,4 +56,5 @@ dependencies {
     compile 'com.flipboard:bottomsheet-commons:1.5.1'
     compile 'com.flipboard:bottomsheet-core:1.5.1'
     compile 'com.android.support:support-v13:26.0.0-alpha1'
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
 }

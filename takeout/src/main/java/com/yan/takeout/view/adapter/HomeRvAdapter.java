@@ -138,6 +138,7 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
         TextView mTvHomeSendPrice;
         @Bind(R.id.tv_home_distance)
         TextView mTvHomeDistance;
+        private Seller mSeller;
 
         public SellerHolder(View view) {
             super(view);
@@ -146,12 +147,14 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, BusinessActivity.class);
+                    intent.putExtra("seller", mSeller);
                     mContext.startActivity(intent);
                 }
             });
         }
 
         public void setData(Seller seller) {
+            mSeller = seller;
             mTvTitle.setText(seller.getName());
             mTvHomeSale.setText("月售" + seller.getSale() + "单");
             mRatingBar.setRating(Float.parseFloat(seller.getScore()));
