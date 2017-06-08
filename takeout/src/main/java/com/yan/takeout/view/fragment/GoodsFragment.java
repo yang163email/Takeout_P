@@ -31,10 +31,10 @@ public class GoodsFragment extends Fragment {
     @Bind(R.id.rv_goods_type)
     RecyclerView mRvGoodsType;
     @Bind(R.id.slhlv)
-    StickyListHeadersListView mSlhlv;
+    public StickyListHeadersListView mSlhlv;
 
     private GoodsTypeRvAdapter mGoodsTypeRvAdapter;
-    private GoodsFragmentPresenter mGoodsFragmentPresenter;
+    public GoodsFragmentPresenter mGoodsFragmentPresenter;
     private GoodsAdapter mGoodsAdapter;
 
     @Nullable
@@ -48,6 +48,7 @@ public class GoodsFragment extends Fragment {
         //左侧滚动栏
         mRvGoodsType.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGoodsTypeRvAdapter = new GoodsTypeRvAdapter(getActivity());
+        mGoodsTypeRvAdapter.setGoodsFragment(this);
         mRvGoodsType.setAdapter(mGoodsTypeRvAdapter);
 
         //右侧栏

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsTypeInfo;
+import com.yan.takeout.view.fragment.GoodsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,11 @@ import butterknife.ButterKnife;
 public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<GoodsTypeInfo> mGoodsTypeInfoList = new ArrayList<>();
+    private GoodsFragment mGoodsFragment;
+
+    public void setGoodsFragment(GoodsFragment goodsFragment) {
+        mGoodsFragment = goodsFragment;
+    }
 
     public void setGoodsTypeInfoList(List<GoodsTypeInfo> goodsTypeInfoList) {
         mGoodsTypeInfoList = goodsTypeInfoList;
@@ -55,6 +61,7 @@ public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
 
     /**当前选中的位置*/
     private int mSelectedPosition = 0;
+
     class ViewHolder extends RecyclerView.ViewHolder{
         private final View mView;
         @Bind(R.id.tvCount)
@@ -62,6 +69,7 @@ public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
         @Bind(R.id.type)
         TextView mType;
         private int mPosition;
+        private GoodsTypeInfo mGoodsTypeInfo;
 
         ViewHolder(View view) {
             super(view);
@@ -72,11 +80,19 @@ public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     mSelectedPosition = mPosition;
                     notifyDataSetChanged();
+
+                    //计算点击左侧时，右侧显示对应商品位置
+                    int typeId = mGoodsTypeInfo.getId();
+                    int goodsPos = mGoodsFragment.mGoodsFragmentPresenter.getGoodsPosByTypeId(typeId);
+
+                    //让右侧选中
+                    mGoodsFragment.mSlhlv.setSelection(goodsPos);
                 }
             });
         }
 
         public void setData(GoodsTypeInfo goodsTypeInfo, int position) {
+            mGoodsTypeInfo = goodsTypeInfo;
             mPosition = position;
 
             if(mSelectedPosition == mPosition) {

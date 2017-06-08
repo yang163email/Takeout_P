@@ -21,6 +21,7 @@ import retrofit2.Call;
 
 public class GoodsFragmentPresenter extends NetPresenter {
     private GoodsFragment mGoodsFragment;
+    private List<GoodsInfo> mAllGoodsTypeInfo;
 
     public GoodsFragmentPresenter(GoodsFragment goodsFragment) {
         mGoodsFragment = goodsFragment;
@@ -42,7 +43,7 @@ public class GoodsFragmentPresenter extends NetPresenter {
 
     @Override
     protected void onSuccess(String jsonData) {
-        List<GoodsInfo> allGoodsTypeInfo = new ArrayList<>();
+        mAllGoodsTypeInfo = new ArrayList<>();
         //解析数据
         Gson gson = new Gson();
         try {
@@ -60,12 +61,26 @@ public class GoodsFragmentPresenter extends NetPresenter {
                     //将类型id、名称设置进去
                     goodsInfo.setTypeId(goodsTypeInfo.getId());
                     goodsInfo.setTypeName(goodsTypeInfo.getName());
-                    allGoodsTypeInfo.add(goodsInfo);
+                    mAllGoodsTypeInfo.add(goodsInfo);
                 }
             }
-            mGoodsFragment.onAllGoodsSuccess(allGoodsTypeInfo);
+            mGoodsFragment.onAllGoodsSuccess(mAllGoodsTypeInfo);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**通过typeId拿到商品的位置*/
+    public int getGoodsPosByTypeId(int typeId) {
+        int position = 0;
+        for (int i = 0; i < mAllGoodsTypeInfo.size(); i++) {
+            GoodsInfo goodsInfo = mAllGoodsTypeInfo.get(i);
+            int goodsTypeId = goodsInfo.getTypeId();
+            if(goodsTypeId == typeId) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 }
