@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -124,6 +125,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         ImageButton mIbAdd;
         private GoodsInfo mGoodsInfo;
         private static final int DURATION = 500;
+        private boolean isGoodsAdding = false;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -194,7 +196,9 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             notifyDataSetChanged();
 
             //增加抛物线动画
-
+            if(isGoodsAdding) {
+                return;
+            }
             //拿到+号在窗体的位置
             int[] startLocation = new int[2];
             mIbAdd.getLocationInWindow(startLocation);
@@ -213,11 +217,11 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             ((BusinessActivity) mGoodsFragment.getActivity()).getImgCartLocation(destLocation);
 
             //获取抛物线动画
-            AnimationSet parabolaAnim = getParabolaAnimation(startLocation, destLocation);
+            AnimationSet parabolaAnim = getParabolaAnimation(imageView, startLocation, destLocation);
             imageView.startAnimation(parabolaAnim);
         }
 
-        private AnimationSet getParabolaAnimation(int[] startLocation, int[] destLocation) {
+        private AnimationSet getParabolaAnimation(final ImageView imageView, int[] startLocation, int[] destLocation) {
             AnimationSet set = new AnimationSet(false);
             set.setDuration(DURATION);
 
@@ -236,9 +240,32 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                     Animation.ABSOLUTE, 0,
                     Animation.ABSOLUTE, 0,
                     Animation.ABSOLUTE, destLocation[1] - startLocation[1]);
+            //加入加速效果
             translateYAnim.setInterpolator(new AccelerateInterpolator());
             translateYAnim.setDuration(DURATION);
             set.addAnimation(translateYAnim);
+
+            set.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    isGoodsAdding = true;
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    //动画结束时，移除copy出来的+号图片
+                    ViewParent parent = imageView.getParent();
+                    if(parent != null) {
+                        ((ViewGroup) parent).removeView(imageView);
+                    }
+                    isGoodsAdding = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
 
             return set;
         }
