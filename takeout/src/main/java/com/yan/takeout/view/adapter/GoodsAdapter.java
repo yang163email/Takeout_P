@@ -133,7 +133,16 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         }
 
         private void doMinusOperation() {
-
+            int count = mGoodsInfo.getCount();
+            //只剩一个时增加动画效果
+            if(count == 1) {
+                AnimationSet hideAnimation = getShowOrHideAnimation(false);
+                mIbMinus.startAnimation(hideAnimation);
+                mTvCount.startAnimation(hideAnimation);
+            }
+            count --;
+            mGoodsInfo.setCount(count);
+            notifyDataSetChanged();
         }
 
         /**增加商品数*/
@@ -141,7 +150,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             int count = mGoodsInfo.getCount();
             //首次添加增加动画效果
             if(count == 0) {
-                AnimationSet showAnimation = getShowAnimation();
+                AnimationSet showAnimation = getShowOrHideAnimation(true);
                 mIbMinus.startAnimation(showAnimation);
                 mTvCount.startAnimation(showAnimation);
             }
@@ -150,26 +159,50 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             notifyDataSetChanged();
         }
 
-        private AnimationSet getShowAnimation() {
+        private AnimationSet getShowOrHideAnimation(boolean isShow) {
             //创建动画集
             AnimationSet set = new AnimationSet(false);
             set.setDuration(DURATION);
 
-            RotateAnimation rotateAnim = new RotateAnimation(0, 720,
-                    Animation.RELATIVE_TO_SELF, 0.5F,
-                    Animation.RELATIVE_TO_SELF, 0.5F);
+            //旋转动画
+            RotateAnimation rotateAnim;
+            if(isShow) {
+                rotateAnim = new RotateAnimation(0, 720,
+                        Animation.RELATIVE_TO_SELF, 0.5F,
+                        Animation.RELATIVE_TO_SELF, 0.5F);
+            }else {
+                rotateAnim = new RotateAnimation(720, 0,
+                        Animation.RELATIVE_TO_SELF, 0.5F,
+                        Animation.RELATIVE_TO_SELF, 0.5F);
+            }
             rotateAnim.setDuration(DURATION);
             set.addAnimation(rotateAnim);
 
-            AlphaAnimation alphaAnim = new AlphaAnimation(0, 1);
+            //透明度动画
+            AlphaAnimation alphaAnim;
+            if(isShow) {
+                alphaAnim = new AlphaAnimation(0, 1);
+            }else {
+                alphaAnim = new AlphaAnimation(1, 0);
+            }
             alphaAnim.setDuration(DURATION);
             set.addAnimation(alphaAnim);
 
-            TranslateAnimation translateAnim = new TranslateAnimation(
-                    Animation.RELATIVE_TO_SELF, 2,
-                    Animation.RELATIVE_TO_SELF, 0,
-                    Animation.RELATIVE_TO_SELF, 0,
-                    Animation.RELATIVE_TO_SELF, 0);
+            //位移动画
+            TranslateAnimation translateAnim;
+            if(isShow) {
+                translateAnim = new TranslateAnimation(
+                        Animation.RELATIVE_TO_SELF, 2,
+                        Animation.RELATIVE_TO_SELF, 0,
+                        Animation.RELATIVE_TO_SELF, 0,
+                        Animation.RELATIVE_TO_SELF, 0);
+            }else {
+                translateAnim = new TranslateAnimation(
+                        Animation.RELATIVE_TO_SELF, 0,
+                        Animation.RELATIVE_TO_SELF, 2,
+                        Animation.RELATIVE_TO_SELF, 0,
+                        Animation.RELATIVE_TO_SELF, 0);
+            }
             translateAnim.setDuration(DURATION);
             set.addAnimation(translateAnim);
 
