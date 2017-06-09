@@ -109,4 +109,8 @@ public class BusinessActivity extends Activity {
     public void addImageButton(ImageView imageView, int width, int height) {
         mFlContainer.addView(imageView, width, height);
     }
+
+    public void getImgCartLocation(int[] destLocation) {
+        mImgCart.getLocationInWindow(destLocation);
+    }
 }

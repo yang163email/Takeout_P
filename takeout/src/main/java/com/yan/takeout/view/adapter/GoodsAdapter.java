@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -195,17 +196,51 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             //增加抛物线动画
 
             //拿到+号在窗体的位置
-            int[] outLocation = new int[2];
-            mIbAdd.getLocationInWindow(outLocation);
-            Log.d(TAG, "doAddOperation: " + outLocation[0] + " " + outLocation[1]);
+            int[] startLocation = new int[2];
+            mIbAdd.getLocationInWindow(startLocation);
+            Log.d(TAG, "doAddOperation: " + startLocation[0] + " " + startLocation[1]);
 
             //拷贝一个+号图片
             ImageView imageView = new ImageView(mContext);
             imageView.setImageResource(R.drawable.button_add);
-            imageView.setX(outLocation[0]);
-            imageView.setY(outLocation[1]);
+            imageView.setX(startLocation[0]);
+            imageView.setY(startLocation[1]);
             ((BusinessActivity) mGoodsFragment.getActivity())
                     .addImageButton(imageView, mIbAdd.getWidth(), mIbAdd.getHeight());
+
+            //获取购物车的绝对位置
+            int[] destLocation = new int[2];
+            ((BusinessActivity) mGoodsFragment.getActivity()).getImgCartLocation(destLocation);
+
+            //获取抛物线动画
+            AnimationSet parabolaAnim = getParabolaAnimation(startLocation, destLocation);
+            imageView.startAnimation(parabolaAnim);
+        }
+
+        private AnimationSet getParabolaAnimation(int[] startLocation, int[] destLocation) {
+            AnimationSet set = new AnimationSet(false);
+            set.setDuration(DURATION);
+
+            //x轴位移动画
+            TranslateAnimation translateXAnim = new TranslateAnimation(
+                    Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, destLocation[0] - startLocation[0],
+                    Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, 0);
+            translateXAnim.setDuration(DURATION);
+            set.addAnimation(translateXAnim);
+
+            //y轴位移动画
+            TranslateAnimation translateYAnim = new TranslateAnimation(
+                    Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, destLocation[1] - startLocation[1]);
+            translateYAnim.setInterpolator(new AccelerateInterpolator());
+            translateYAnim.setDuration(DURATION);
+            set.addAnimation(translateYAnim);
+
+            return set;
         }
 
         /**显示或隐藏动画*/
