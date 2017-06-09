@@ -24,7 +24,7 @@ import retrofit2.Call;
 public class GoodsFragmentPresenter extends NetPresenter {
     private GoodsFragment mGoodsFragment;
     private List<GoodsInfo> mAllGoodsTypeInfo;
-    private List<GoodsTypeInfo> mGoodsTypeInfos;
+    public List<GoodsTypeInfo> mGoodsTypeInfos;
 
     public GoodsFragmentPresenter(GoodsFragment goodsFragment) {
         mGoodsFragment = goodsFragment;
@@ -96,7 +96,7 @@ public class GoodsFragmentPresenter extends NetPresenter {
     }
 
     /**循环左侧列表*/
-    private int getTypePosByTypeId(int newTypeId) {
+    public int getTypePosByTypeId(int newTypeId) {
         int position = 0;
         for (int i = 0; i < mGoodsTypeInfos.size(); i++) {
             GoodsTypeInfo goodsTypeInfo = mGoodsTypeInfos.get(i);

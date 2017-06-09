@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsInfo;
+import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.util.PriceFormater;
+import com.yan.takeout.view.fragment.GoodsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,13 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
 
     private Context mContext;
     private List<GoodsInfo> mGoodsInfoList = new ArrayList<>();
+    private GoodsFragment mGoodsFragment;
 
+    public void setGoodsFragment(GoodsFragment goodsFragment) {
+        mGoodsFragment = goodsFragment;
+    }
+
+    /**设置数据*/
     public void setGoodsInfoList(List<GoodsInfo> goodsInfoList) {
         mGoodsInfoList = goodsInfoList;
         notifyDataSetChanged();
@@ -121,15 +129,40 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
 
         @OnClick({R.id.ib_add, R.id.ib_minus})
         public void onAddOrMinusClick(View v) {
+            boolean isAdd = false;
             switch (v.getId()) {
                 case R.id.ib_add:
                     //处理增加商品数量
                     doAddOperation();
+                    isAdd = true;
                     break;
                 case R.id.ib_minus:
                     //处理减去商品数
                     doMinusOperation();
+                    break;
             }
+            processRedCount(isAdd);
+        }
+
+        /**处理左侧红点个数*/
+        private void processRedCount(boolean isAdd) {
+            //拿到点击的typeid
+            int typeId = mGoodsInfo.getTypeId();
+            //根据typeid遍历得到左边pos
+            int pos = mGoodsFragment.mGoodsFragmentPresenter.getTypePosByTypeId(typeId);
+
+            //根据pos找到左侧整个的goodtypeInfo
+            GoodsTypeInfo goodsTypeInfo = mGoodsFragment.mGoodsFragmentPresenter.mGoodsTypeInfos.get(pos);
+            //设置红点数量
+            int redCount = goodsTypeInfo.getRedCount();
+            //刷新
+            if(isAdd) {
+                redCount ++;
+            }else {
+                redCount --;
+            }
+            goodsTypeInfo.setRedCount(redCount);
+            mGoodsFragment.mGoodsTypeRvAdapter.notifyDataSetChanged();
         }
 
         private void doMinusOperation() {
@@ -159,6 +192,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             notifyDataSetChanged();
         }
 
+        /**显示或隐藏动画*/
         private AnimationSet getShowOrHideAnimation(boolean isShow) {
             //创建动画集
             AnimationSet set = new AnimationSet(false);
@@ -233,10 +267,13 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                 //显示
                 mTvCount.setVisibility(View.VISIBLE);
                 mIbMinus.setVisibility(View.VISIBLE);
+                mIbMinus.setClickable(true);
             }else {
                 //不显示
                 mTvCount.setVisibility(View.INVISIBLE);
                 mIbMinus.setVisibility(View.INVISIBLE);
+                //防手快出现负数商品数
+                mIbMinus.setClickable(false);
             }
             mTvCount.setText(count + "");
         }

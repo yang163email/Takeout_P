@@ -7,6 +7,17 @@ public class GoodsTypeInfo {
     String name;//商品类型名称
     String info;//特价信息
     List<GoodsInfo> list;//商品列表
+
+	int redCount;	//选中商品数量
+
+	public int getRedCount() {
+		return redCount;
+	}
+
+	public void setRedCount(int redCount) {
+		this.redCount = redCount;
+	}
+
 	public GoodsTypeInfo() {
 		super();
 	}

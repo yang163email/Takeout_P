@@ -53,6 +53,7 @@ public class GoodsFragment extends Fragment {
 
         //右侧栏
         mGoodsAdapter = new GoodsAdapter(getActivity());
+        mGoodsAdapter.setGoodsFragment(this);
         mSlhlv.setAdapter(mGoodsAdapter);
         return goodsView;
     }

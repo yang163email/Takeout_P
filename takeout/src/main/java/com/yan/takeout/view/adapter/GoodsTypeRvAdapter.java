@@ -106,6 +106,15 @@ public class GoodsTypeRvAdapter extends RecyclerView.Adapter {
                 mType.setTypeface(Typeface.DEFAULT);
             }
             mType.setText(goodsTypeInfo.getName());
+
+            if(goodsTypeInfo.getRedCount() == 0) {
+                //不显示红点
+                mTvCount.setVisibility(View.INVISIBLE);
+            }else {
+                //显示
+                mTvCount.setVisibility(View.VISIBLE);
+                mTvCount.setText(goodsTypeInfo.getRedCount() + "");
+            }
         }
     }
 }
