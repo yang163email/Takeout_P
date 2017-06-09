@@ -190,6 +190,13 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             count ++;
             mGoodsInfo.setCount(count);
             notifyDataSetChanged();
+
+            //增加抛物线动画
+
+            //拿到+号在窗体的位置
+            int[] outLocation = new int[2];
+            mIbAdd.getLocationInWindow(outLocation);
+            Log.d(TAG, "doAddOperation: " + outLocation[0] + " " + outLocation[1]);
         }
 
         /**显示或隐藏动画*/
@@ -247,7 +254,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             mGoodsInfo = goodsInfo;
             mTvName.setText(goodsInfo.getName());
 
-            Log.d(TAG, "setData: " + goodsInfo.getIcon());
+//            Log.d(TAG, "setData: " + goodsInfo.getIcon());
             Picasso.with(mContext).load(goodsInfo.getIcon()).into(mIvIcon);
             mTvZucheng.setText(goodsInfo.getForm());
             mTvYueshaoshounum.setText("月售" + goodsInfo.getMonthSaleNum() + "份");
