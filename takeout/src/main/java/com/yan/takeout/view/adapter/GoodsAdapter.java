@@ -6,6 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -108,6 +113,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         @Bind(R.id.ib_add)
         ImageButton mIbAdd;
         private GoodsInfo mGoodsInfo;
+        private static final int DURATION = 500;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -133,9 +139,41 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         /**增加商品数*/
         private void doAddOperation() {
             int count = mGoodsInfo.getCount();
+            //首次添加增加动画效果
+            if(count == 0) {
+                AnimationSet showAnimation = getShowAnimation();
+                mIbMinus.startAnimation(showAnimation);
+                mTvCount.startAnimation(showAnimation);
+            }
             count ++;
             mGoodsInfo.setCount(count);
             notifyDataSetChanged();
+        }
+
+        private AnimationSet getShowAnimation() {
+            //创建动画集
+            AnimationSet set = new AnimationSet(false);
+            set.setDuration(DURATION);
+
+            RotateAnimation rotateAnim = new RotateAnimation(0, 720,
+                    Animation.RELATIVE_TO_SELF, 0.5F,
+                    Animation.RELATIVE_TO_SELF, 0.5F);
+            rotateAnim.setDuration(DURATION);
+            set.addAnimation(rotateAnim);
+
+            AlphaAnimation alphaAnim = new AlphaAnimation(0, 1);
+            alphaAnim.setDuration(DURATION);
+            set.addAnimation(alphaAnim);
+
+            TranslateAnimation translateAnim = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF, 2,
+                    Animation.RELATIVE_TO_SELF, 0,
+                    Animation.RELATIVE_TO_SELF, 0,
+                    Animation.RELATIVE_TO_SELF, 0);
+            translateAnim.setDuration(DURATION);
+            set.addAnimation(translateAnim);
+
+            return set;
         }
 
         public void setData(GoodsInfo goodsInfo) {
@@ -164,8 +202,8 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                 mIbMinus.setVisibility(View.VISIBLE);
             }else {
                 //不显示
-                mTvCount.setVisibility(View.GONE);
-                mIbMinus.setVisibility(View.GONE);
+                mTvCount.setVisibility(View.INVISIBLE);
+                mIbMinus.setVisibility(View.INVISIBLE);
             }
             mTvCount.setText(count + "");
         }
