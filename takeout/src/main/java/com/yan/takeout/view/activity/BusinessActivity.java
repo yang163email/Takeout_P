@@ -105,4 +105,8 @@ public class BusinessActivity extends Activity {
                 break;
         }
     }
+
+    public void addImageButton(ImageView imageView, int width, int height) {
+        mFlContainer.addView(imageView, width, height);
+    }
 }

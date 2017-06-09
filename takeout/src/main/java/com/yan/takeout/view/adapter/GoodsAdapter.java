@@ -21,6 +21,7 @@ import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.util.PriceFormater;
+import com.yan.takeout.view.activity.BusinessActivity;
 import com.yan.takeout.view.fragment.GoodsFragment;
 
 import java.util.ArrayList;
@@ -197,6 +198,14 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             int[] outLocation = new int[2];
             mIbAdd.getLocationInWindow(outLocation);
             Log.d(TAG, "doAddOperation: " + outLocation[0] + " " + outLocation[1]);
+
+            //拷贝一个+号图片
+            ImageView imageView = new ImageView(mContext);
+            imageView.setImageResource(R.drawable.button_add);
+            imageView.setX(outLocation[0]);
+            imageView.setY(outLocation[1]);
+            ((BusinessActivity) mGoodsFragment.getActivity())
+                    .addImageButton(imageView, mIbAdd.getWidth(), mIbAdd.getHeight());
         }
 
         /**显示或隐藏动画*/
