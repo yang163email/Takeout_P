@@ -14,6 +14,15 @@ public class GoodsInfo {
 
 	int typeId;	//类型id
 	String typeName;	//类型名称
+	int count;	//商品数量
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
 
 	public int getTypeId() {
 		return typeId;

@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
@@ -106,12 +107,39 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
         TextView mTvCount;
         @Bind(R.id.ib_add)
         ImageButton mIbAdd;
+        private GoodsInfo mGoodsInfo;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
 
+        @OnClick({R.id.ib_add, R.id.ib_minus})
+        public void onAddOrMinusClick(View v) {
+            switch (v.getId()) {
+                case R.id.ib_add:
+                    //处理增加商品数量
+                    doAddOperation();
+                    break;
+                case R.id.ib_minus:
+                    //处理减去商品数
+                    doMinusOperation();
+            }
+        }
+
+        private void doMinusOperation() {
+
+        }
+
+        /**增加商品数*/
+        private void doAddOperation() {
+            int count = mGoodsInfo.getCount();
+            count ++;
+            mGoodsInfo.setCount(count);
+            notifyDataSetChanged();
+        }
+
         public void setData(GoodsInfo goodsInfo) {
+            mGoodsInfo = goodsInfo;
             mTvName.setText(goodsInfo.getName());
 
             Log.d(TAG, "setData: " + goodsInfo.getIcon());
@@ -128,6 +156,18 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                 //废除线
                 mTvOldprice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             }
+
+            int count = goodsInfo.getCount();
+            if(count > 0) {
+                //显示
+                mTvCount.setVisibility(View.VISIBLE);
+                mIbMinus.setVisibility(View.VISIBLE);
+            }else {
+                //不显示
+                mTvCount.setVisibility(View.GONE);
+                mIbMinus.setVisibility(View.GONE);
+            }
+            mTvCount.setText(count + "");
         }
     }
 }
