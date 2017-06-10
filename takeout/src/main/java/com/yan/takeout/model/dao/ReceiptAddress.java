@@ -3,12 +3,14 @@ package com.yan.takeout.model.dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 /**
  * 收货地址的Javabean模型
  */
 
 @DatabaseTable(tableName = "t_address")
-public class ReceiptAddress {
+public class ReceiptAddress implements Serializable {
 
     @DatabaseField(generatedId = true)
     private int id;

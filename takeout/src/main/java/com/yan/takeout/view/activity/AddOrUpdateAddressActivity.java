@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * Created by 楠GG on 2017/6/10.
  */
 
-public class AddReceiptAddressActivity extends Activity {
+public class AddOrUpdateAddressActivity extends Activity {
     @Bind(R.id.ib_back)
     ImageButton mIbBack;
     @Bind(R.id.tv_title)
@@ -72,12 +72,14 @@ public class AddReceiptAddressActivity extends Activity {
     @Bind(R.id.bt_ok)
     Button mBtOk;
     private AddressDao mAddressDao;
+    private ReceiptAddress mAddress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_receipt_address);
         ButterKnife.bind(this);
+        processIntent();
         mAddressDao = new AddressDao(this);
 
         mEtPhone.addTextChangedListener(new TextWatcher() {
@@ -123,6 +125,31 @@ public class AddReceiptAddressActivity extends Activity {
         });
     }
 
+    private void processIntent() {
+        if(getIntent() != null) {
+            mAddress = (ReceiptAddress) getIntent().getSerializableExtra("address");
+            if(mAddress != null) {
+                //更新
+                mTvTitle.setText("修改地址");
+                mEtName.setText(mAddress.getName());
+                String sex = mAddress.getSex();
+                if("先生".equals(sex)) {
+                    mRbMan.setChecked(true);
+                }else {
+                    mRbWomen.setChecked(true);
+                }
+                mEtPhone.setText(mAddress.getPhone());
+                mEtPhoneOther.setText(mAddress.getPhoneOther());
+                mEtReceiptAddress.setText(mAddress.getAddress());
+                mEtDetailAddress.setText(mAddress.getDetailAddress());
+                mTvLabel.setText(mAddress.getSelectLabel());
+            }else {
+                //新增
+                mTvTitle.setText("新增地址");
+            }
+        }
+    }
+
     @OnClick({R.id.ib_back, R.id.ib_delete, R.id.ib_delete_phone, R.id.ib_add_phone_other, R.id.ib_delete_phone_other, R.id.ib_select_label, R.id.bt_ok})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -148,25 +175,56 @@ public class AddReceiptAddressActivity extends Activity {
             case R.id.bt_ok:
                 boolean isOk = checkReceiptAddressInfo();
                 if(isOk) {
-                    //把地址保存在本地数据库
-//                    int id, String name, String sex, String phone, String phoneOther, String address, String detailAddress, String selectLabel, String userId
-                    String name = mEtName.getText().toString().trim();
-                    String sex = "女士";
-                    if(mRbMan.isChecked()) {
-                        sex = "先生";
-                    }
-                    String phone = mEtPhone.getText().toString().trim();
-                    String phoneOther = mEtPhoneOther.getText().toString().trim();
-                    String address = mEtReceiptAddress.getText().toString().trim();
-                    String detailAddress = mEtDetailAddress.getText().toString().trim();
-                    String selectLabel = mTvLabel.getText().toString();
+                    if(mAddress != null) {
+                        //修改
+                        String name = mEtName.getText().toString().trim();
+                        String sex = "女士";
+                        if (mRbMan.isChecked()) {
+                            sex = "先生";
+                        }
+                        String phone = mEtPhone.getText().toString().trim();
+                        String phoneOther = mEtPhoneOther.getText().toString().trim();
+                        String address = mEtReceiptAddress.getText().toString().trim();
+                        String detailAddress = mEtDetailAddress.getText().toString().trim();
+                        String selectLabel = mTvLabel.getText().toString();
 
-                    boolean ok = mAddressDao.insertAddress(new ReceiptAddress(8888, name, sex, phone,
-                            phoneOther, address, detailAddress, selectLabel, "36"));
-                    if(ok) {
-                        finish();
+                        mAddress.setName(name);
+                        mAddress.setSex(sex);
+                        mAddress.setPhone(phone);
+                        mAddress.setPhoneOther(phoneOther);
+                        mAddress.setAddress(address);
+                        mAddress.setDetailAddress(detailAddress);
+                        mAddress.setSelectLabel(selectLabel);
+
+
+                        boolean ok = mAddressDao.updateAddress(mAddress);
+                        if (ok) {
+                            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "请仔细检查您的数据", Toast.LENGTH_SHORT).show();
+                        }
                     }else {
-                        Toast.makeText(this, "请仔细检查您的数据", Toast.LENGTH_SHORT).show();
+                        //把地址保存在本地数据库
+//                    int id, String name, String sex, String phone, String phoneOther, String address, String detailAddress, String selectLabel, String userId
+                        String name = mEtName.getText().toString().trim();
+                        String sex = "女士";
+                        if (mRbMan.isChecked()) {
+                            sex = "先生";
+                        }
+                        String phone = mEtPhone.getText().toString().trim();
+                        String phoneOther = mEtPhoneOther.getText().toString().trim();
+                        String address = mEtReceiptAddress.getText().toString().trim();
+                        String detailAddress = mEtDetailAddress.getText().toString().trim();
+                        String selectLabel = mTvLabel.getText().toString();
+
+                        boolean ok = mAddressDao.insertAddress(new ReceiptAddress(8888, name, sex, phone,
+                                phoneOther, address, detailAddress, selectLabel, "36"));
+                        if (ok) {
+                            finish();
+                        } else {
+                            Toast.makeText(this, "请仔细检查您的数据", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
                 break;

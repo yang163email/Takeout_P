@@ -1,6 +1,7 @@
 package com.yan.takeout.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,12 +12,14 @@ import android.widget.TextView;
 
 import com.yan.takeout.R;
 import com.yan.takeout.model.dao.ReceiptAddress;
+import com.yan.takeout.view.activity.AddOrUpdateAddressActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by 楠GG on 2017/6/10.
@@ -69,6 +72,19 @@ public class AddressRvAdapter extends RecyclerView.Adapter {
         TextView mTvAddress;
         @Bind(R.id.iv_edit)
         ImageView mIvEdit;
+        private ReceiptAddress mAddress;
+
+        @OnClick(R.id.iv_edit)
+        public void onclick(View view) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, AddOrUpdateAddressActivity.class);
+                    intent.putExtra("address", mAddress);
+                    mContext.startActivity(intent);
+                }
+            });
+        }
 
         ViewHolder(View view) {
             super(view);
@@ -76,6 +92,7 @@ public class AddressRvAdapter extends RecyclerView.Adapter {
         }
 
         public void setData(ReceiptAddress address) {
+            mAddress = address;
             mTvName.setText(address.getName());
             mTvSex.setText(address.getSex());
             mTvPhone.setText(address.getPhone() + "," + address.getPhoneOther());

@@ -68,7 +68,7 @@ public class ReceiptAddressActivity extends Activity {
                 break;
             case R.id.tv_add_address:
                 //新增地址
-                Intent intent = new Intent(this, AddReceiptAddressActivity.class);
+                Intent intent = new Intent(this, AddOrUpdateAddressActivity.class);
                 startActivity(intent);
                 break;
         }
