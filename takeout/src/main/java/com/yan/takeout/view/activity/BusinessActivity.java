@@ -24,6 +24,7 @@ import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.util.PriceFormater;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.adapter.BusinessFragmentPagerAdapter;
 import com.yan.takeout.view.adapter.CartRvAdapter;
 import com.yan.takeout.view.fragment.CommentFragment;
@@ -199,6 +200,9 @@ public class BusinessActivity extends Activity {
         //底部清空
         List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
         updateCartUi(cartList);
+
+        //清除缓存
+        TakeoutApp.sInstance.clearCacheSelectedInfo((int) mSeller.getId());
     }
 
     public void addImageButton(ImageView imageView, int width, int height) {

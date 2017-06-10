@@ -7,6 +7,7 @@ import com.yan.takeout.model.net.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -18,7 +19,7 @@ public class TakeoutApp extends Application {
 
     public static User sUser;
     public static TakeoutApp sInstance;
-    public List<CacheSelectedInfo> infos = new ArrayList<>();
+    public CopyOnWriteArrayList<CacheSelectedInfo> infos = new CopyOnWriteArrayList<>();
 
     @Override
     public void onCreate() {
@@ -72,12 +73,15 @@ public class TakeoutApp extends Application {
     }
 
     public void clearCacheSelectedInfo(int sellerId){
+        List<CacheSelectedInfo> temp = new ArrayList<>();
         for (int i = 0; i < infos.size(); i++) {
             CacheSelectedInfo info = infos.get(i);
             if(info.getSellerId() == sellerId){
-                infos.remove(info);
+//                infos.remove(info);
+                temp.add(info);
             }
         }
+        infos.removeAll(temp);
     }
 
     public void deleteCacheSelectedInfo(int goodsId) {
