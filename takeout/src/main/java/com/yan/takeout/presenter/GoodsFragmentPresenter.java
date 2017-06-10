@@ -137,4 +137,13 @@ public class GoodsFragmentPresenter extends NetPresenter {
         }
         return cartList;
     }
+
+    /**清空购物车*/
+    public void clearCart() {
+        if(mAllGoodsTypeInfo != null) {
+            for (GoodsInfo goodsInfo : mAllGoodsTypeInfo) {
+                goodsInfo.setCount(0);
+            }
+        }
+    }
 }

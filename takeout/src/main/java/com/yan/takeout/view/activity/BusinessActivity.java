@@ -1,7 +1,9 @@
 package com.yan.takeout.view.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsInfo;
+import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.util.PriceFormater;
 import com.yan.takeout.view.adapter.BusinessFragmentPagerAdapter;
@@ -123,6 +126,14 @@ public class BusinessActivity extends Activity {
         GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
         if(mBottomSheetView == null) {
             mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, null);
+            TextView tvClearCart = (TextView) mBottomSheetView.findViewById(R.id.tvClear);
+            tvClearCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showClearCartDialog();
+                }
+            });
+
             mRvCart = (RecyclerView) mBottomSheetView.findViewById(R.id.rvCart);
             mRvCart.setLayoutManager(new LinearLayoutManager(this));
             mCartRvAdapter = new CartRvAdapter(this, goodsFragment);
@@ -141,6 +152,50 @@ public class BusinessActivity extends Activity {
                 mBottomSheetLayout.showWithSheetView(mBottomSheetView);
             }
         }
+    }
+
+    /**弹出清空购物车的dialog*/
+    private void showClearCartDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("确定不吃了么？");
+        dialog.setPositiveButton("是，我要减肥", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                clearCart();
+            }
+        });
+        dialog.setNegativeButton("不，还要吃", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.show();
+    }
+
+    /**清空购物车*/
+    private void clearCart() {
+        //四个地方需要清空
+        //当前购物车中
+        GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
+        goodsFragment.mGoodsFragmentPresenter.clearCart();
+        mCartRvAdapter.notifyDataSetChanged();
+        showOrHideCart();
+
+        //左侧红点清空
+        List<GoodsTypeInfo> goodsTypeInfoList = goodsFragment.mGoodsFragmentPresenter.mGoodsTypeInfos;
+        for (GoodsTypeInfo goodsTypeInfo : goodsTypeInfoList) {
+        	goodsTypeInfo.setRedCount(0);
+        }
+        goodsFragment.mGoodsTypeRvAdapter.notifyDataSetChanged();
+
+        //右侧清空
+        goodsFragment.mGoodsAdapter.notifyDataSetChanged();
+
+        //底部清空
+        List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
+        updateCartUi(cartList);
     }
 
     public void addImageButton(ImageView imageView, int width, int height) {
