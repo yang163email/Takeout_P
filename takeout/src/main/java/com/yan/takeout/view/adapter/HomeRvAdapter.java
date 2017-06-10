@@ -15,6 +15,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.Seller;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.BusinessActivity;
 
 import java.util.ArrayList;
@@ -147,6 +148,13 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, BusinessActivity.class);
+                    //有没有店铺商品的缓存
+                    boolean hasSelectInfo = false;
+                    int sellerId = TakeoutApp.sInstance.queryCacheSelectedInfoBySellerId((int) mSeller.getId());
+                    if(sellerId > 0) {
+                        hasSelectInfo = true;
+                    }
+                    intent.putExtra("hasSelectInfo", hasSelectInfo);
                     intent.putExtra("seller", mSeller);
                     mContext.startActivity(intent);
                 }

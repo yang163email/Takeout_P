@@ -76,6 +76,7 @@ public class BusinessActivity extends Activity {
     public Seller mSeller;
     private RecyclerView mRvCart;
     private CartRvAdapter mCartRvAdapter;
+    public boolean mHasSelectInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,9 +95,11 @@ public class BusinessActivity extends Activity {
         mTabs.setupWithViewPager(mVp);
     }
 
+    /**处理传递的intent*/
     private void processIntent() {
         if(getIntent() != null) {
             mSeller = (Seller) getIntent().getSerializableExtra("seller");
+            mHasSelectInfo = getIntent().getBooleanExtra("hasSelectInfo", false);
         }
     }
 

@@ -7,6 +7,8 @@ import com.google.gson.reflect.TypeToken;
 import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.model.net.ResponseInfo;
+import com.yan.takeout.util.TakeoutApp;
+import com.yan.takeout.view.activity.BusinessActivity;
 import com.yan.takeout.view.fragment.GoodsFragment;
 
 import org.json.JSONException;
@@ -58,9 +60,25 @@ public class GoodsFragmentPresenter extends NetPresenter {
 
             for (int i = 0; i < mGoodsTypeInfos.size(); i++) {
                 GoodsTypeInfo goodsTypeInfo = mGoodsTypeInfos.get(i);
+
+                //查找此类别有多少缓存数据
+                int redCount = 0;
+                boolean hasSelectInfo = ((BusinessActivity) mGoodsFragment.getActivity()).mHasSelectInfo;
+                if(hasSelectInfo) {
+                    redCount = TakeoutApp.sInstance.queryCacheSelectedInfoByTypeId(goodsTypeInfo.getId());
+                    goodsTypeInfo.setRedCount(redCount);
+                }
+
                 List<GoodsInfo> goodsTypeInfoList = goodsTypeInfo.getList();
                 for (int j = 0; j < goodsTypeInfoList.size(); j++) {
                     GoodsInfo goodsInfo = goodsTypeInfoList.get(j);
+
+                    //查找商品有多少缓存
+                    if(redCount > 0) {
+                        int count = TakeoutApp.sInstance.queryCacheSelectedInfoByGoodsId(goodsInfo.getId());
+                        goodsInfo.setCount(count);
+                    }
+
                     //将类型id、名称设置进去
                     goodsInfo.setTypeId(goodsTypeInfo.getId());
                     goodsInfo.setTypeName(goodsTypeInfo.getName());
