@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -63,6 +64,7 @@ public class BusinessActivity extends Activity {
     FrameLayout mFlContainer;
     @Bind(R.id.tabs)
     TabLayout mTabs;
+    View mBottomSheetView;
 
     private List<Fragment> mFragmentList = new ArrayList<>();
     public Seller mSeller;
@@ -96,7 +98,7 @@ public class BusinessActivity extends Activity {
         mFragmentList.add(new SellerFragment());
     }
 
-    @OnClick({R.id.ib_back, R.id.tvSubmit})
+    @OnClick({R.id.ib_back, R.id.tvSubmit, R.id.bottom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ib_back:
@@ -105,6 +107,24 @@ public class BusinessActivity extends Activity {
             case R.id.tvSubmit:
                 //结算
                 break;
+            case R.id.bottom:
+                //弹dialog
+                showOrHideCart();
+                break;
+        }
+    }
+
+    private void showOrHideCart() {
+        if(mBottomSheetView == null) {
+            mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, null);
+        }
+
+        if(mBottomSheetLayout.isSheetShowing()) {
+            //关闭显示
+            mBottomSheetLayout.dismissSheet();
+        }else {
+            //显示
+            mBottomSheetLayout.showWithSheetView(mBottomSheetView);
         }
     }
 
