@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yan.takeout.R;
 
@@ -141,6 +142,10 @@ public class AddReceiptAddressActivity extends Activity {
                 alertSelectLabelDialog();
                 break;
             case R.id.bt_ok:
+                boolean isOk = checkReceiptAddressInfo();
+                if(isOk) {
+                    //把地址保存在本地数据库
+                }
                 break;
         }
     }
@@ -161,5 +166,38 @@ public class AddReceiptAddressActivity extends Activity {
             }
         });
         builder.show();
+    }
+
+    public boolean checkReceiptAddressInfo() {
+        String name = mEtName.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(this, "请填写联系人", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String phone = mEtPhone.getText().toString().trim();
+        if (TextUtils.isEmpty(phone)) {
+            Toast.makeText(this, "请填写手机号码", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isMobileNO(phone)) {
+            Toast.makeText(this, "请填写合法的手机号", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String receiptAddress = mEtReceiptAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(receiptAddress)) {
+            Toast.makeText(this, "请填写收获地址", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String address = mEtDetailAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(address)) {
+            Toast.makeText(this, "请填写详细地址", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isMobileNO(String phone) {
+        String telRegex = "[1][358]\\d{9}";//"[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+        return phone.matches(telRegex);
     }
 }
