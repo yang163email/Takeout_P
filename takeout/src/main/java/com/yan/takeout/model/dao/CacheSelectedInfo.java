@@ -13,6 +13,13 @@ public class CacheSelectedInfo {
 
     private int count;  //商品数量
 
+    public CacheSelectedInfo(int sellerId, int typeId, int goodsId, int count) {
+        this.sellerId = sellerId;
+        this.typeId = typeId;
+        this.goodsId = goodsId;
+        this.count = count;
+    }
+
     public int getSellerId() {
         return sellerId;
     }

@@ -20,9 +20,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.yan.takeout.R;
+import com.yan.takeout.model.dao.CacheSelectedInfo;
 import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
+import com.yan.takeout.util.Constant;
 import com.yan.takeout.util.PriceFormater;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.BusinessActivity;
 import com.yan.takeout.view.fragment.GoodsFragment;
 
@@ -180,6 +183,12 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                 AnimationSet hideAnimation = getShowOrHideAnimation(false);
                 mIbMinus.startAnimation(hideAnimation);
                 mTvCount.startAnimation(hideAnimation);
+
+                //移除数据
+                TakeoutApp.sInstance.deleteCacheSelectedInfo(mGoodsInfo.getId());
+            }else {
+                //更新数据
+                TakeoutApp.sInstance.updateCacheSelectedInfo(mGoodsInfo.getId(), Constant.MINUS);
             }
             count --;
             mGoodsInfo.setCount(count);
@@ -194,6 +203,14 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                 AnimationSet showAnimation = getShowOrHideAnimation(true);
                 mIbMinus.startAnimation(showAnimation);
                 mTvCount.startAnimation(showAnimation);
+
+                //首次添加缓存
+                int sellerId = (int) ((BusinessActivity) mGoodsFragment.getActivity()).mSeller.getId();
+                TakeoutApp.sInstance.addCacheSelectedInfo(new CacheSelectedInfo(
+                        sellerId, mGoodsInfo.getTypeId(), mGoodsInfo.getId(), 1));
+            }else {
+                //更新缓存
+                TakeoutApp.sInstance.updateCacheSelectedInfo(mGoodsInfo.getId(), Constant.ADD);
             }
             count ++;
             mGoodsInfo.setCount(count);

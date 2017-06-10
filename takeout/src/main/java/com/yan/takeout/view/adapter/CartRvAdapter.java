@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
+import com.yan.takeout.util.Constant;
 import com.yan.takeout.util.PriceFormater;
+import com.yan.takeout.util.TakeoutApp;
 import com.yan.takeout.view.activity.BusinessActivity;
 import com.yan.takeout.view.fragment.GoodsFragment;
 
@@ -120,6 +122,11 @@ public class CartRvAdapter extends RecyclerView.Adapter {
                     //关闭购物车dialog
                     ((BusinessActivity) mGoodsFragment.getActivity()).showOrHideCart();
                 }
+                //移除数据
+                TakeoutApp.sInstance.deleteCacheSelectedInfo(mGoodsInfo.getId());
+            }else {
+                //更新数据
+                TakeoutApp.sInstance.updateCacheSelectedInfo(mGoodsInfo.getId(), Constant.MINUS);
             }
             mGoodsInfo.setCount(count);
             notifyDataSetChanged();
@@ -149,10 +156,13 @@ public class CartRvAdapter extends RecyclerView.Adapter {
         private void doAddOperation() {
             //刷新当前购物车的数量
             int count = mGoodsInfo.getCount();
+
             count ++;
             mGoodsInfo.setCount(count);
             notifyDataSetChanged();
 
+            //更新缓存
+            TakeoutApp.sInstance.updateCacheSelectedInfo(mGoodsInfo.getId(), Constant.ADD);
         }
 
         public void setData(GoodsInfo goodsInfo) {
