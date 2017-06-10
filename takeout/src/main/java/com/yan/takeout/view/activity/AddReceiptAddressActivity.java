@@ -1,6 +1,9 @@
 package com.yan.takeout.view.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -135,9 +138,28 @@ public class AddReceiptAddressActivity extends Activity {
                 mEtPhoneOther.setText("");
                 break;
             case R.id.ib_select_label:
+                alertSelectLabelDialog();
                 break;
             case R.id.bt_ok:
                 break;
         }
+    }
+
+    private String[] mTitles = {"无", "学校", "公司", "家"};
+    private String[] mBgColors = new String[]{"#FFE6AA6A", "#FF32E9DA", "#FF9432E9", "#FF51E932"};
+
+    /**弹出选择标签dialog*/
+    private void alertSelectLabelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请选择地址标签");
+        builder.setItems(mTitles, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mTvLabel.setText(mTitles[which]);
+                mTvLabel.setTextColor(Color.BLACK);
+                mTvLabel.setBackgroundColor(Color.parseColor(mBgColors[which]));
+            }
+        });
+        builder.show();
     }
 }
