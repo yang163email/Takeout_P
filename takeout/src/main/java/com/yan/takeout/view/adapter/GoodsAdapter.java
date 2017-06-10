@@ -186,7 +186,7 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
             notifyDataSetChanged();
         }
 
-        /**增加商品数*/
+        /**增加商品操作*/
         private void doAddOperation() {
             int count = mGoodsInfo.getCount();
             //首次添加增加动画效果
