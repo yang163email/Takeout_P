@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yan.takeout.R;
+import com.yan.takeout.dagger2.component.DaggerGoodsFragmentComponent;
+import com.yan.takeout.dagger2.module.GoodsFragmentModule;
 import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.GoodsTypeInfo;
 import com.yan.takeout.presenter.GoodsFragmentPresenter;
@@ -18,6 +20,8 @@ import com.yan.takeout.view.adapter.GoodsAdapter;
 import com.yan.takeout.view.adapter.GoodsTypeRvAdapter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,6 +38,8 @@ public class GoodsFragment extends Fragment {
     public StickyListHeadersListView mSlhlv;
 
     public GoodsTypeRvAdapter mGoodsTypeRvAdapter;
+
+    @Inject
     public GoodsFragmentPresenter mGoodsFragmentPresenter;
     public GoodsAdapter mGoodsAdapter;
 
@@ -43,8 +49,9 @@ public class GoodsFragment extends Fragment {
         View goodsView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_goods, container, false);
         ButterKnife.bind(this, goodsView);
 
-
-        mGoodsFragmentPresenter = new GoodsFragmentPresenter(this);
+//        mGoodsFragmentPresenter = new GoodsFragmentPresenter(this);
+        DaggerGoodsFragmentComponent.builder().goodsFragmentModule(
+                new GoodsFragmentModule(this)).build().in(this);
         //左侧滚动栏
         mRvGoodsType.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGoodsTypeRvAdapter = new GoodsTypeRvAdapter(getActivity());
