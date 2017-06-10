@@ -129,6 +129,14 @@ public class AddOrUpdateAddressActivity extends Activity {
         if(getIntent() != null) {
             mAddress = (ReceiptAddress) getIntent().getSerializableExtra("address");
             if(mAddress != null) {
+                //也可以删除
+                mIbDelete.setVisibility(View.VISIBLE);
+                mIbDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDeleteDialog();
+                    }
+                });
                 //更新
                 mTvTitle.setText("修改地址");
                 mEtName.setText(mAddress.getName());
@@ -148,6 +156,27 @@ public class AddOrUpdateAddressActivity extends Activity {
                 mTvTitle.setText("新增地址");
             }
         }
+    }
+
+    private void alertDeleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("确定删除此地址吗？");
+        builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mAddressDao.deleteAddress(mAddress);
+                Toast.makeText(AddOrUpdateAddressActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        builder.setNegativeButton("不，我还要用", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.show();
     }
 
     @OnClick({R.id.ib_back, R.id.ib_delete, R.id.ib_delete_phone, R.id.ib_add_phone_other, R.id.ib_delete_phone_other, R.id.ib_select_label, R.id.bt_ok})
