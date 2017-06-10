@@ -87,6 +87,9 @@ public class GoodsFragmentPresenter extends NetPresenter {
             }
             mGoodsFragment.onAllGoodsSuccess(mAllGoodsTypeInfo);
 
+            //获取数据成功后刷新下方数据
+            ((BusinessActivity) mGoodsFragment.getActivity()).updateCartUi(getCartList());
+
             mGoodsFragment.mSlhlv.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {
