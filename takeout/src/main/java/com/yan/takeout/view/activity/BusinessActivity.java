@@ -119,7 +119,7 @@ public class BusinessActivity extends Activity {
         }
     }
 
-    private void showOrHideCart() {
+    public void showOrHideCart() {
         GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
         if(mBottomSheetView == null) {
             mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, null);
@@ -133,11 +133,13 @@ public class BusinessActivity extends Activity {
             //关闭显示
             mBottomSheetLayout.dismissSheet();
         }else {
-            //显示
-            mBottomSheetLayout.showWithSheetView(mBottomSheetView);
             //首先拿到购物车数据
             List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
             mCartRvAdapter.setCartList(cartList);
+            if(cartList != null && cartList.size() > 0) {
+                //有数据才显示
+                mBottomSheetLayout.showWithSheetView(mBottomSheetView);
+            }
         }
     }
 

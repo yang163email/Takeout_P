@@ -88,6 +88,7 @@ public class CartRvAdapter extends RecyclerView.Adapter {
             switch (view.getId()) {
                 case R.id.ib_minus:
                     //减去货物
+                    doMinusOperation();
                     break;
                 case R.id.ib_add:
                     //添加
@@ -107,6 +108,24 @@ public class CartRvAdapter extends RecyclerView.Adapter {
             ((BusinessActivity) mGoodsFragment.getActivity()).updateCartUi(cartList);
         }
 
+        /**减号操作*/
+        private void doMinusOperation() {
+            //刷新当前购物车的数量
+            int count = mGoodsInfo.getCount();
+            count --;
+            if(count == 0) {
+                //数量为0，移除
+                mCartList.remove(mGoodsInfo);
+                if(mCartList.size() == 0) {
+                    //关闭购物车dialog
+                    ((BusinessActivity) mGoodsFragment.getActivity()).showOrHideCart();
+                }
+            }
+            mGoodsInfo.setCount(count);
+            notifyDataSetChanged();
+        }
+
+        /**处理红点数量*/
         private void processRedCount(boolean isAdd) {
             //获取当前点击条目的typeId
             int typeId = mGoodsInfo.getTypeId();
