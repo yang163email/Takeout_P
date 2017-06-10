@@ -4,12 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.yan.takeout.R;
+import com.yan.takeout.model.dao.AddressDao;
+import com.yan.takeout.model.dao.ReceiptAddress;
+import com.yan.takeout.util.RecycleViewDivider;
+import com.yan.takeout.view.adapter.AddressRvAdapter;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,12 +35,29 @@ public class ReceiptAddressActivity extends Activity {
     RecyclerView mRvReceiptAddress;
     @Bind(R.id.tv_add_address)
     TextView mTvAddAddress;
+    private AddressDao mAddressDao;
+    private AddressRvAdapter mAddressRvAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_address);
         ButterKnife.bind(this);
+        mAddressDao = new AddressDao(this);
+
+        mRvReceiptAddress.setLayoutManager(new LinearLayoutManager(this));
+        mRvReceiptAddress.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
+        mAddressRvAdapter = new AddressRvAdapter(this);
+        mRvReceiptAddress.setAdapter(mAddressRvAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        List<ReceiptAddress> receiptAddresses = mAddressDao.queryAllAddress();
+        if(receiptAddresses != null) {
+            mAddressRvAdapter.setAddressList(receiptAddresses);
+        }
     }
 
     @OnClick({R.id.ib_back, R.id.tv_add_address})
