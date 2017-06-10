@@ -120,11 +120,12 @@ public class BusinessActivity extends Activity {
     }
 
     private void showOrHideCart() {
+        GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
         if(mBottomSheetView == null) {
             mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, null);
             mRvCart = (RecyclerView) mBottomSheetView.findViewById(R.id.rvCart);
             mRvCart.setLayoutManager(new LinearLayoutManager(this));
-            mCartRvAdapter = new CartRvAdapter(this);
+            mCartRvAdapter = new CartRvAdapter(this, goodsFragment);
             mRvCart.setAdapter(mCartRvAdapter);
         }
 
@@ -135,9 +136,8 @@ public class BusinessActivity extends Activity {
             //显示
             mBottomSheetLayout.showWithSheetView(mBottomSheetView);
             //首先拿到购物车数据
-            GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
             List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
-            mCartRvAdapter.setGoodsInfoList(cartList);
+            mCartRvAdapter.setCartList(cartList);
         }
     }
 

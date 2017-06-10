@@ -35,7 +35,7 @@ public class GoodsFragment extends Fragment {
 
     public GoodsTypeRvAdapter mGoodsTypeRvAdapter;
     public GoodsFragmentPresenter mGoodsFragmentPresenter;
-    private GoodsAdapter mGoodsAdapter;
+    public GoodsAdapter mGoodsAdapter;
 
     @Nullable
     @Override
