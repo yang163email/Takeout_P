@@ -146,6 +146,10 @@ public class GoodsAdapter extends BaseAdapter implements StickyListHeadersAdapte
                     break;
             }
             processRedCount(isAdd);
+
+            //处理下方购物车的显示
+            List<GoodsInfo> cartList = mGoodsFragment.mGoodsFragmentPresenter.getCartList();
+            ((BusinessActivity) mGoodsFragment.getActivity()).updateCartUi(cartList);
         }
 
         /**处理左侧红点个数*/

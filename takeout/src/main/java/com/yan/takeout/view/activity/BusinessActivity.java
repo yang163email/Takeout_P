@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.yan.takeout.R;
+import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.Seller;
+import com.yan.takeout.util.PriceFormater;
 import com.yan.takeout.view.adapter.BusinessFragmentPagerAdapter;
 import com.yan.takeout.view.fragment.CommentFragment;
 import com.yan.takeout.view.fragment.GoodsFragment;
@@ -112,5 +114,25 @@ public class BusinessActivity extends Activity {
 
     public void getImgCartLocation(int[] destLocation) {
         mImgCart.getLocationInWindow(destLocation);
+    }
+
+    /**处理购物车的显示*/
+    public void updateCartUi(List<GoodsInfo> cartList) {
+        int cartCount = 0;     //购物车商品总数
+        float countPrice = 0;   //购物车商品总价
+        if(cartList != null) {
+            for (GoodsInfo goodsInfo : cartList) {
+            	cartCount += goodsInfo.getCount();
+                countPrice += goodsInfo.getCount() * Float.parseFloat(goodsInfo.getNewPrice());
+            }
+        }
+
+        if(cartCount > 0) {
+            mTvSelectNum.setVisibility(View.VISIBLE);
+            mTvSelectNum.setText(cartCount + "");
+        }else {
+            mTvSelectNum.setVisibility(View.GONE);
+        }
+        mTvCountPrice.setText(PriceFormater.format(countPrice));
     }
 }

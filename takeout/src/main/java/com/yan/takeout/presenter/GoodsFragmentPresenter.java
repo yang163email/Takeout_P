@@ -122,4 +122,19 @@ public class GoodsFragmentPresenter extends NetPresenter {
         }
         return position;
     }
+
+    /**获取购物车的goods集合*/
+    public List<GoodsInfo> getCartList() {
+        List<GoodsInfo> cartList = new ArrayList<>();
+
+        if(mAllGoodsTypeInfo != null) {
+            for (GoodsInfo goodsInfo : mAllGoodsTypeInfo) {
+            	if(goodsInfo.getCount() > 0) {
+                    //有点餐数量
+                    cartList.add(goodsInfo);
+                }
+            }
+        }
+        return cartList;
+    }
 }
