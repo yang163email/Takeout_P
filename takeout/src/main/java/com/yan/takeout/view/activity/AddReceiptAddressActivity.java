@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yan.takeout.R;
+import com.yan.takeout.model.dao.AddressDao;
+import com.yan.takeout.model.dao.ReceiptAddress;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,12 +71,14 @@ public class AddReceiptAddressActivity extends Activity {
     ImageView mIbSelectLabel;
     @Bind(R.id.bt_ok)
     Button mBtOk;
+    private AddressDao mAddressDao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_receipt_address);
         ButterKnife.bind(this);
+        mAddressDao = new AddressDao(this);
 
         mEtPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -145,6 +149,25 @@ public class AddReceiptAddressActivity extends Activity {
                 boolean isOk = checkReceiptAddressInfo();
                 if(isOk) {
                     //把地址保存在本地数据库
+//                    int id, String name, String sex, String phone, String phoneOther, String address, String detailAddress, String selectLabel, String userId
+                    String name = mEtName.getText().toString().trim();
+                    String sex = "女士";
+                    if(mRbMan.isChecked()) {
+                        sex = "先生";
+                    }
+                    String phone = mEtPhone.getText().toString().trim();
+                    String phoneOther = mEtPhoneOther.getText().toString().trim();
+                    String address = mEtReceiptAddress.getText().toString().trim();
+                    String detailAddress = mEtDetailAddress.getText().toString().trim();
+                    String selectLabel = mTvLabel.getText().toString();
+
+                    boolean ok = mAddressDao.insertAddress(new ReceiptAddress(8888, name, sex, phone,
+                            phoneOther, address, detailAddress, selectLabel, "36"));
+                    if(ok) {
+                        finish();
+                    }else {
+                        Toast.makeText(this, "请仔细检查您的数据", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }

@@ -29,4 +29,19 @@ public class ReceiptAddress {
 
     @DatabaseField(columnName = "userId")
     private String userId;  //用户id
+
+    public ReceiptAddress() {
+    }
+
+    public ReceiptAddress(int id, String name, String sex, String phone, String phoneOther, String address, String detailAddress, String selectLabel, String userId) {
+        this.id = id;
+        this.name = name;
+        this.sex = sex;
+        this.phone = phone;
+        this.phoneOther = phoneOther;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.selectLabel = selectLabel;
+        this.userId = userId;
+    }
 }
