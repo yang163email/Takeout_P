@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,6 +22,7 @@ import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.util.PriceFormater;
 import com.yan.takeout.view.adapter.BusinessFragmentPagerAdapter;
+import com.yan.takeout.view.adapter.CartRvAdapter;
 import com.yan.takeout.view.fragment.CommentFragment;
 import com.yan.takeout.view.fragment.GoodsFragment;
 import com.yan.takeout.view.fragment.SellerFragment;
@@ -68,6 +71,8 @@ public class BusinessActivity extends Activity {
 
     private List<Fragment> mFragmentList = new ArrayList<>();
     public Seller mSeller;
+    private RecyclerView mRvCart;
+    private CartRvAdapter mCartRvAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +122,10 @@ public class BusinessActivity extends Activity {
     private void showOrHideCart() {
         if(mBottomSheetView == null) {
             mBottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, null);
+            mRvCart = (RecyclerView) mBottomSheetView.findViewById(R.id.rvCart);
+            mRvCart.setLayoutManager(new LinearLayoutManager(this));
+            mCartRvAdapter = new CartRvAdapter(this);
+            mRvCart.setAdapter(mCartRvAdapter);
         }
 
         if(mBottomSheetLayout.isSheetShowing()) {
@@ -125,6 +134,10 @@ public class BusinessActivity extends Activity {
         }else {
             //显示
             mBottomSheetLayout.showWithSheetView(mBottomSheetView);
+            //首先拿到购物车数据
+            GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
+            List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
+            mCartRvAdapter.setGoodsInfoList(cartList);
         }
     }
 
