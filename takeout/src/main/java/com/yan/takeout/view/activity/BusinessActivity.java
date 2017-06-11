@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -31,6 +32,7 @@ import com.yan.takeout.view.fragment.CommentFragment;
 import com.yan.takeout.view.fragment.GoodsFragment;
 import com.yan.takeout.view.fragment.SellerFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +122,12 @@ public class BusinessActivity extends Activity {
                 break;
             case R.id.tvSubmit:
                 //结算
+                Intent intent = new Intent(this, ConfirmOrderActivity.class);
+                GoodsFragment goodsFragment = (GoodsFragment) mFragmentList.get(0);
+                List<GoodsInfo> cartList = goodsFragment.mGoodsFragmentPresenter.getCartList();
+                intent.putExtra("cartList", (Serializable) cartList);
+                intent.putExtra("seller", mSeller);
+                startActivity(intent);
                 break;
             case R.id.bottom:
                 //弹dialog

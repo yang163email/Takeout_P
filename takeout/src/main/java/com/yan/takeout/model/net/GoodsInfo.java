@@ -1,6 +1,8 @@
 package com.yan.takeout.model.net;
 
-public class GoodsInfo {
+import java.io.Serializable;
+
+public class GoodsInfo implements Serializable {
     int id;//商品id
     String name;//商品名称
     String icon;//商品图片
