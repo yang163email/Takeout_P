@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/alipay_demo" />
             <option value="$PROJECT_DIR$/gaodedemo" />
             <option value="$PROJECT_DIR$/takeout" />
+            <option value="$PROJECT_DIR$/testmap" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

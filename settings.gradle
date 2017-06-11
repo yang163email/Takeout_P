@@ -1,1 +1,1 @@
-include ':takeout', ':alipay_demo', ':gaodedemo'
+include ':takeout', ':alipay_demo', ':gaodedemo', ':testmap'
