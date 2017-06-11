@@ -100,6 +100,8 @@ public class BusinessActivity extends Activity {
     private void processIntent() {
         if(getIntent() != null) {
             mSeller = (Seller) getIntent().getSerializableExtra("seller");
+            mTvSendPrice.setText(PriceFormater.format(Float.parseFloat(mSeller.getSendPrice())) + "元起送");
+            mTvDeliveryFee.setText("另需起送费" + PriceFormater.format(Float.parseFloat(mSeller.getDeliveryFee())));
             mHasSelectInfo = getIntent().getBooleanExtra("hasSelectInfo", false);
         }
     }
@@ -231,5 +233,13 @@ public class BusinessActivity extends Activity {
             mTvSelectNum.setVisibility(View.GONE);
         }
         mTvCountPrice.setText(PriceFormater.format(countPrice));
+
+        if(countPrice > Float.parseFloat(mSeller.getSendPrice())){
+            mTvSendPrice.setVisibility(View.GONE);
+            mTvSubmit.setVisibility(View.VISIBLE);
+        }else {
+            mTvSendPrice.setVisibility(View.VISIBLE);
+            mTvSubmit.setVisibility(View.GONE);
+        }
     }
 }

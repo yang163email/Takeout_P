@@ -5,7 +5,6 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "t_user")
 public class User {
-
 	//id手动赋值
 	@DatabaseField(id = true)
 	private int id;
