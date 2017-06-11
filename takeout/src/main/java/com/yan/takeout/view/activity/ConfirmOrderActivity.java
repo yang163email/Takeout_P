@@ -1,6 +1,7 @@
 package com.yan.takeout.view.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.yan.takeout.model.net.GoodsInfo;
 import com.yan.takeout.model.net.Seller;
 import com.yan.takeout.util.PriceFormater;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.Bind;
@@ -56,6 +58,9 @@ public class ConfirmOrderActivity extends Activity {
     TextView mTvCountPrice;
     @Bind(R.id.tvSubmit)
     TextView mTvSubmit;
+    private Seller mSeller;
+    private List<GoodsInfo> mCartList;
+    private float mCountPrice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,17 +73,17 @@ public class ConfirmOrderActivity extends Activity {
 
     private void processIntent() {
         if(getIntent() != null) {
-            Seller seller = (Seller) getIntent().getSerializableExtra("seller");
-            List<GoodsInfo> cartList = (List<GoodsInfo>) getIntent().getSerializableExtra("cartList");
+            mSeller = (Seller) getIntent().getSerializableExtra("seller");
+            mCartList = (List<GoodsInfo>) getIntent().getSerializableExtra("cartList");
 
-            mTvSellerName.setText(seller.getName());
-            mTvDeliveryFee.setText(PriceFormater.format(Float.parseFloat(seller.getDeliveryFee())));
+            mTvSellerName.setText(mSeller.getName());
+            mTvDeliveryFee.setText(PriceFormater.format(Float.parseFloat(mSeller.getDeliveryFee())));
 
-            float countPrice = Float.parseFloat(seller.getDeliveryFee());
-            for (GoodsInfo goodsInfo : cartList) {
-                countPrice += Float.parseFloat(goodsInfo.getNewPrice()) * goodsInfo.getCount();
+            mCountPrice = Float.parseFloat(mSeller.getDeliveryFee());
+            for (GoodsInfo goodsInfo : mCartList) {
+                mCountPrice += Float.parseFloat(goodsInfo.getNewPrice()) * goodsInfo.getCount();
             }
-            mTvCountPrice.setText("待支付" + PriceFormater.format(countPrice));
+            mTvCountPrice.setText("待支付" + PriceFormater.format(mCountPrice));
         }
     }
 
@@ -88,6 +93,12 @@ public class ConfirmOrderActivity extends Activity {
             case R.id.iv_arrow:
                 break;
             case R.id.tvSubmit:
+                //提交订单
+                Intent intent = new Intent(this, OnlinePaymentActivity.class);
+                intent.putExtra("seller", mSeller);
+                intent.putExtra("cartList", (Serializable) mCartList);
+                intent.putExtra("countPrice", mCountPrice);
+                startActivity(intent);
                 break;
         }
     }
