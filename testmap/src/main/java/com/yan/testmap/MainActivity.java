@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -16,14 +17,28 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.poisearch.PoiResult;
+import com.amap.api.services.poisearch.PoiSearch;
 
-public class MainActivity extends AppCompatActivity implements LocationSource, AMapLocationListener {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements LocationSource, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
     private MapView mapView;
     private AMap aMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
+    private int currentPage;
+    private PoiSearch.Query query;
+    private String keyWord = "";
+    private String city = "深圳市";
+    private PoiSearch poiSearch;
+    private PoiResult poiResult;
+    private ArrayList<PoiItem> poiItems;
+    private LatLng mLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,15 +133,53 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        Log.d("MainActivity", aMapLocation.getAddress());
+        if (aMapLocation != null && aMapLocation.getAddress() != null) {
+            Log.d("MainActivity", aMapLocation.getAddress());
 
-        aMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude())));
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
+            mLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+            aMap.moveCamera(CameraUpdateFactory.newLatLng(mLatLng));
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
 
-        if(mlocationClient != null) {
-            //定位成功后停止继续定位
-            mlocationClient.stopLocation();
-            mlocationClient.onDestroy();
+            if (mlocationClient != null) {
+                //定位成功后停止继续定位
+                mlocationClient.stopLocation();
+                mlocationClient.onDestroy();
+            }
+
+            doSearchQuery();
         }
+    }
+
+    protected void doSearchQuery() {
+        currentPage = 0;
+        query = new PoiSearch.Query(keyWord, "", city);// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+        query.setPageSize(50);// 设置每页最多返回多少条poiitem
+        query.setPageNum(currentPage);// 设置查第一页
+
+        if (mLatLng != null) {
+            poiSearch = new PoiSearch(this, query);
+            poiSearch.setOnPoiSearchListener(this);
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mLatLng.latitude, mLatLng.longitude), 5000, true));//
+            // 设置搜索区域为以lp点为圆心，其周围5000米范围
+            poiSearch.searchPOIAsyn();// 异步搜索
+        }
+    }
+
+    @Override
+    public void onPoiSearched(PoiResult result, int rcode) {
+        if (rcode == 1000) {
+            if (result != null && result.getQuery() != null) {// 搜索poi的结果
+                if (result.getQuery().equals(query)) {// 是否是同一条
+                    poiResult = result;
+                    poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
+                    Toast.makeText(this, "poiItems.size():" + poiItems.size(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onPoiItemSearched(PoiItem poiItem, int i) {
+
     }
 }
