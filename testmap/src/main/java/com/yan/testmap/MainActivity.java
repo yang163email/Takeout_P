@@ -3,6 +3,8 @@ package com.yan.testmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,12 +41,20 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
     private PoiResult poiResult;
     private ArrayList<PoiItem> poiItems;
     private LatLng mLatLng;
+    private RecyclerView mRecyclerView;
+    private AroundRvAdapter mAroundRvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mapView = (MapView) findViewById(R.id.map_view);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAroundRvAdapter = new AroundRvAdapter(this);
+        mRecyclerView.setAdapter(mAroundRvAdapter);
+
         mapView.onCreate(savedInstanceState);
 
         init();
@@ -173,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
                     poiResult = result;
                     poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
                     Toast.makeText(this, "poiItems.size():" + poiItems.size(), Toast.LENGTH_SHORT).show();
+
+                    //成功后设置数据
+                    mAroundRvAdapter.setPoiItems(poiItems);
                 }
             }
         }
