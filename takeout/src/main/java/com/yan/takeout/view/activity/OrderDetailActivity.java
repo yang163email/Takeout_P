@@ -10,15 +10,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps2d.model.PolylineOptions;
 import com.yan.takeout.R;
 import com.yan.takeout.util.OrderObservable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -243,11 +247,26 @@ public class OrderDetailActivity extends Activity implements Observer {
 
     private void updateRider(double lat, double lnt) {
         mMarker.hideInfoWindow();
-        mMarker.setPosition(new LatLng(lat, lnt));
+        LatLng point = new LatLng(lat, lnt);
+        mPoints.add(point);
+        mMarker.setPosition(point);
         aMap.moveCamera(CameraUpdateFactory.newLatLng
                 (new LatLng(lat, lnt)));
+
+        //更新位置，并画线
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.width(3);
+        polylineOptions.color(Color.RED);
+        polylineOptions.add(mPoints.get(mPoints.size() - 1) , mPoints.get(mPoints.size() - 2));
+        aMap.addPolyline(polylineOptions);
+
+        float distance = AMapUtils.calculateLineDistance(point, new LatLng(22.5765800000, 113.9237520000));
+        mMarker.setSnippet("距离目标：" + distance + "米");
+        mMarker.showInfoWindow();
         aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
     }
+
+    private List<LatLng> mPoints = new ArrayList<>();
 
     private void initRider() {
         MarkerOptions riderMarkerOptions = new MarkerOptions();
@@ -255,7 +274,10 @@ public class OrderDetailActivity extends Activity implements Observer {
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.order_rider_icon);
         riderMarkerOptions.icon(BitmapDescriptorFactory.fromView(imageView));
-        riderMarkerOptions.position(new LatLng(22.5766790000, 113.9205490000));
+        LatLng point = new LatLng(22.5766790000, 113.9205490000);
+        //添加到集合中
+        mPoints.add(point);
+        riderMarkerOptions.position(point);
         riderMarkerOptions.snippet("我是百度骑士");
 
         mMarker = aMap.addMarker(riderMarkerOptions);
