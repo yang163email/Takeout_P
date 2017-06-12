@@ -1,8 +1,12 @@
-package com.yan.testmap;
+package com.yan.takeout.view.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v13.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,11 +27,16 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.yan.takeout.R;
+import com.yan.takeout.view.adapter.AroundRvAdapter;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LocationSource, AMapLocationListener, PoiSearch.OnPoiSearchListener {
+/**
+ * Created by 楠GG on 2017/6/12.
+ */
 
+public class AroundSearchActivity extends Activity implements LocationSource, AMapLocationListener, PoiSearch.OnPoiSearchListener {
     private MapView mapView;
     private AMap aMap;
     private OnLocationChangedListener mListener;
@@ -43,11 +52,21 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
     private LatLng mLatLng;
     private RecyclerView mRecyclerView;
     private AroundRvAdapter mAroundRvAdapter;
+    private static final int WRITE_COARSE_LOCATION_REQUEST_CODE = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_around_search);
+
+        //这里以ACCESS_COARSE_LOCATION为例
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    WRITE_COARSE_LOCATION_REQUEST_CODE);//自定义的code
+        }
+
         mapView = (MapView) findViewById(R.id.map_view);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -58,6 +77,21 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
         mapView.onCreate(savedInstanceState);
 
         init();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == WRITE_COARSE_LOCATION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //执行定位
+                if (mlocationClient != null) {
+                    mlocationClient.startLocation();
+                }
+            }else {
+                Toast.makeText(this, "定位权限被拒绝，无法定位", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void init() {

@@ -3,6 +3,7 @@ package com.yan.takeout.view.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -71,6 +72,8 @@ public class AddOrUpdateAddressActivity extends Activity {
     ImageView mIbSelectLabel;
     @Bind(R.id.bt_ok)
     Button mBtOk;
+    @Bind(R.id.btn_location_address)
+    Button mBtnLocationAddress;
     private AddressDao mAddressDao;
     private ReceiptAddress mAddress;
 
@@ -90,9 +93,9 @@ public class AddOrUpdateAddressActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!TextUtils.isEmpty(s)) {
+                if (!TextUtils.isEmpty(s)) {
                     mIbDeletePhone.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mIbDeletePhone.setVisibility(View.GONE);
                 }
             }
@@ -111,9 +114,9 @@ public class AddOrUpdateAddressActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!TextUtils.isEmpty(s)) {
+                if (!TextUtils.isEmpty(s)) {
                     mIbDeletePhoneOther.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mIbDeletePhoneOther.setVisibility(View.GONE);
                 }
             }
@@ -126,9 +129,9 @@ public class AddOrUpdateAddressActivity extends Activity {
     }
 
     private void processIntent() {
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             mAddress = (ReceiptAddress) getIntent().getSerializableExtra("address");
-            if(mAddress != null) {
+            if (mAddress != null) {
                 //也可以删除
                 mIbDelete.setVisibility(View.VISIBLE);
                 mIbDelete.setOnClickListener(new View.OnClickListener() {
@@ -141,9 +144,9 @@ public class AddOrUpdateAddressActivity extends Activity {
                 mTvTitle.setText("修改地址");
                 mEtName.setText(mAddress.getName());
                 String sex = mAddress.getSex();
-                if("先生".equals(sex)) {
+                if ("先生".equals(sex)) {
                     mRbMan.setChecked(true);
-                }else {
+                } else {
                     mRbWomen.setChecked(true);
                 }
                 mEtPhone.setText(mAddress.getPhone());
@@ -151,7 +154,7 @@ public class AddOrUpdateAddressActivity extends Activity {
                 mEtReceiptAddress.setText(mAddress.getAddress());
                 mEtDetailAddress.setText(mAddress.getDetailAddress());
                 mTvLabel.setText(mAddress.getSelectLabel());
-            }else {
+            } else {
                 //新增
                 mTvTitle.setText("新增地址");
             }
@@ -179,11 +182,16 @@ public class AddOrUpdateAddressActivity extends Activity {
         builder.show();
     }
 
-    @OnClick({R.id.ib_back, R.id.ib_delete, R.id.ib_delete_phone, R.id.ib_add_phone_other, R.id.ib_delete_phone_other, R.id.ib_select_label, R.id.bt_ok})
+    @OnClick({R.id.btn_location_address, R.id.ib_back, R.id.ib_delete, R.id.ib_delete_phone, R.id.ib_add_phone_other, R.id.ib_delete_phone_other, R.id.ib_select_label, R.id.bt_ok})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ib_back:
                 finish();
+                break;
+            case R.id.btn_location_address:
+                //地图定位
+                Intent intent = new Intent(this, AroundSearchActivity.class);
+                startActivity(intent);
                 break;
             case R.id.ib_delete:
                 break;
@@ -203,8 +211,8 @@ public class AddOrUpdateAddressActivity extends Activity {
                 break;
             case R.id.bt_ok:
                 boolean isOk = checkReceiptAddressInfo();
-                if(isOk) {
-                    if(mAddress != null) {
+                if (isOk) {
+                    if (mAddress != null) {
                         //修改
                         String name = mEtName.getText().toString().trim();
                         String sex = "女士";
@@ -233,7 +241,7 @@ public class AddOrUpdateAddressActivity extends Activity {
                         } else {
                             Toast.makeText(this, "请仔细检查您的数据", Toast.LENGTH_SHORT).show();
                         }
-                    }else {
+                    } else {
                         //把地址保存在本地数据库
 //                    int id, String name, String sex, String phone, String phoneOther, String address, String detailAddress, String selectLabel, String userId
                         String name = mEtName.getText().toString().trim();
@@ -263,7 +271,9 @@ public class AddOrUpdateAddressActivity extends Activity {
     private String[] mTitles = {"无", "学校", "公司", "家"};
     private String[] mBgColors = new String[]{"#FFE6AA6A", "#FF32E9DA", "#FF9432E9", "#FF51E932"};
 
-    /**弹出选择标签dialog*/
+    /**
+     * 弹出选择标签dialog
+     */
     private void alertSelectLabelDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("请选择地址标签");
