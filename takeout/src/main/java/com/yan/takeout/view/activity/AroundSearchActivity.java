@@ -229,4 +229,5 @@ public class AroundSearchActivity extends Activity implements LocationSource, AM
     public void onPoiItemSearched(PoiItem poiItem, int i) {
 
     }
+
 }

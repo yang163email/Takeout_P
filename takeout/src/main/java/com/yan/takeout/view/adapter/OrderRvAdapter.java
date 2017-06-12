@@ -1,6 +1,7 @@
 package com.yan.takeout.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.yan.takeout.R;
 import com.yan.takeout.model.net.Order;
 import com.yan.takeout.util.OrderObservable;
+import com.yan.takeout.view.activity.OrderDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,13 +138,24 @@ public class OrderRvAdapter extends RecyclerView.Adapter implements Observer{
         TextView mTvOrderItemMoney;
         @Bind(R.id.tv_order_item_multi_function)
         TextView mTvOrderItemMultiFunction;
+        private Order mOrder;
 
         OrderItemHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, OrderDetailActivity.class);
+                    intent.putExtra("orderId", mOrder.id);
+                    intent.putExtra("type", mOrder.type);
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
         public void setData(Order order) {
+            mOrder = order;
             mTvOrderItemSellerName.setText(order.seller.getName());
             mTvOrderItemType.setText(getOrderTypeInfo(order.type));
         }

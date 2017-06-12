@@ -191,7 +191,7 @@ public class AddOrUpdateAddressActivity extends Activity {
             case R.id.btn_location_address:
                 //地图定位
                 Intent intent = new Intent(this, AroundSearchActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 10001);
                 break;
             case R.id.ib_delete:
                 break;
@@ -319,5 +319,16 @@ public class AddOrUpdateAddressActivity extends Activity {
     public boolean isMobileNO(String phone) {
         String telRegex = "[1][358]\\d{9}";//"[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
         return phone.matches(telRegex);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == 200) {
+            String title = data.getStringExtra("title");
+            String snippet = data.getStringExtra("snippet");
+            mEtReceiptAddress.setText(title);
+            mEtDetailAddress.setText(snippet);
+        }
     }
 }

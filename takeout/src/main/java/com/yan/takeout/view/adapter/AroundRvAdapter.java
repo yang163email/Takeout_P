@@ -1,6 +1,8 @@
 package com.yan.takeout.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,13 +55,25 @@ public class AroundRvAdapter extends RecyclerView.Adapter {
         TextView mTitle;
         @butterknife.Bind(R.id.address)
         TextView mAddress;
+        private PoiItem mPoiItem;
 
         ViewHolder(View view) {
             super(view);
             butterknife.ButterKnife.bind(this, view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("title", mPoiItem.getTitle());
+                    intent.putExtra("snippet", mPoiItem.getSnippet());
+                    ((Activity) mContext).setResult(200, intent);
+                    ((Activity) mContext).finish();
+                }
+            });
         }
 
         public void setData(PoiItem poiItem) {
+            mPoiItem = poiItem;
             mTitle.setText(poiItem.getTitle());
             mAddress.setText(poiItem.getSnippet());
         }
