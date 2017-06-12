@@ -87,10 +87,16 @@ public class ConfirmOrderActivity extends Activity {
         }
     }
 
-    @OnClick({R.id.iv_arrow, R.id.tvSubmit})
+    @OnClick({R.id.ib_back, R.id.rl_location, R.id.tvSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.iv_arrow:
+            case R.id.ib_back:
+                finish();
+                break;
+            case R.id.rl_location:
+                //跳转到收货地址页面
+                Intent intent2 = new Intent(this, ReceiptAddressActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.tvSubmit:
                 //提交订单
