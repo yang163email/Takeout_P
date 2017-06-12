@@ -129,6 +129,7 @@ public class BusinessActivity extends Activity {
                 intent.putExtra("seller", mSeller);
                 startActivity(intent);
                 break;
+
             case R.id.bottom:
                 //弹dialog
                 showOrHideCart();

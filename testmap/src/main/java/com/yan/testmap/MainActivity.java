@@ -122,5 +122,11 @@ public class MainActivity extends AppCompatActivity implements LocationSource, A
 
         aMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude())));
         aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
+
+        if(mlocationClient != null) {
+            //定位成功后停止继续定位
+            mlocationClient.stopLocation();
+            mlocationClient.onDestroy();
+        }
     }
 }
