@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.yan.takeout.R;
 import com.yan.takeout.util.OrderObservable;
 
@@ -181,8 +183,35 @@ public class OrderDetailActivity extends Activity implements Observer {
             if (mType.equals(OrderObservable.ORDERTYPE_RECEIVEORDER)) {
                 mapView.setVisibility(View.VISIBLE);
 
+//                aMap.moveCamera(CameraUpdateFactory.newLatLng
+//                        (new LatLng(22.5788340000, 113.9216700000)));
+
+                //标注卖家
+                MarkerOptions sellerMarkerOptions = new MarkerOptions();
+                sellerMarkerOptions.icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.order_seller_icon));
+                sellerMarkerOptions.position(new LatLng(22.5788340000, 113.9216700000));
+                sellerMarkerOptions.title("丰顺自选快餐");
+                sellerMarkerOptions.snippet("我是丰顺自选快餐");
+
+                aMap.addMarker(sellerMarkerOptions);
                 aMap.moveCamera(CameraUpdateFactory.newLatLng
                         (new LatLng(22.5788340000, 113.9216700000)));
+
+                //标注买家
+                MarkerOptions buyerMarkerOptions = new MarkerOptions();
+
+                ImageView imageView = new ImageView(this);
+                imageView.setImageResource(R.drawable.order_buyer_icon);
+                buyerMarkerOptions.icon(BitmapDescriptorFactory.fromView(imageView));
+                buyerMarkerOptions.position(new LatLng(22.5765800000, 113.9237520000));
+                buyerMarkerOptions.title("黑马程序员");
+                buyerMarkerOptions.snippet("我是黑马程序员");
+
+                aMap.addMarker(buyerMarkerOptions);
+                aMap.moveCamera(CameraUpdateFactory.newLatLng
+                        (new LatLng(22.5765800000, 113.9237520000)));
+
                 aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
             }
         }
