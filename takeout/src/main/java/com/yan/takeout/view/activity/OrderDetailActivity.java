@@ -12,6 +12,10 @@ import android.widget.TextView;
 import com.yan.takeout.R;
 import com.yan.takeout.util.OrderObservable;
 
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,7 +28,7 @@ import static com.yan.takeout.util.OrderObservable.ORDERTYPE_DISTRIBUTION_RIDER_
  * Created by 楠GG on 2017/6/12.
  */
 
-public class OrderDetailActivity extends Activity {
+public class OrderDetailActivity extends Activity implements Observer{
     @Bind(R.id.iv_order_detail_back)
     ImageView mIvOrderDetailBack;
     @Bind(R.id.tv_seller_name)
@@ -35,6 +39,8 @@ public class OrderDetailActivity extends Activity {
     LinearLayout mLlOrderDetailTypeContainer;
     @Bind(R.id.ll_order_detail_type_point_container)
     LinearLayout mLlOrderDetailTypePointContainer;
+    private String mOrderId;
+    private String mType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,18 +48,22 @@ public class OrderDetailActivity extends Activity {
         setContentView(R.layout.activity_order_detail);
         ButterKnife.bind(this);
         processIntent();
+        //添加到观察者中
+        OrderObservable.getInstance().addObserver(this);
     }
 
     private void processIntent() {
         if(getIntent() != null) {
-            String orderId = getIntent().getStringExtra("orderId");
-            String type = getIntent().getStringExtra("type");
-            int index = getIndex(type);
+            mOrderId = getIntent().getStringExtra("orderId");
+            mType = getIntent().getStringExtra("type");
+            int index = getIndex(mType);
 
-            ((TextView) mLlOrderDetailTypeContainer.getChildAt(index))
-                    .setTextColor(Color.BLUE);
-            ((ImageView) mLlOrderDetailTypePointContainer.getChildAt(index))
-                    .setImageResource(R.drawable.order_time_node_disabled);
+            if(index != -1) {
+                ((TextView) mLlOrderDetailTypeContainer.getChildAt(index))
+                        .setTextColor(Color.BLUE);
+                ((ImageView) mLlOrderDetailTypePointContainer.getChildAt(index))
+                        .setImageResource(R.drawable.order_time_node_disabled);
+            }
         }
     }
 
@@ -96,6 +106,24 @@ public class OrderDetailActivity extends Activity {
             case R.id.iv_order_detail_back:
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Map<String, String> data = (Map<String, String>) arg;
+        String pushOrderId = data.get("orderId");
+        String pushType = data.get("type");
+
+        if(mOrderId.equals(pushOrderId)) {
+            //如果是这一单
+            int index = getIndex(pushType);
+            if(index != -1) {
+                ((TextView) mLlOrderDetailTypeContainer.getChildAt(index))
+                        .setTextColor(Color.BLUE);
+                ((ImageView) mLlOrderDetailTypePointContainer.getChildAt(index))
+                        .setImageResource(R.drawable.order_time_node_disabled);
+            }
         }
     }
 }
