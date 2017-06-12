@@ -9,6 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.LatLng;
 import com.yan.takeout.R;
 import com.yan.takeout.util.OrderObservable;
 
@@ -28,7 +32,7 @@ import static com.yan.takeout.util.OrderObservable.ORDERTYPE_DISTRIBUTION_RIDER_
  * Created by 楠GG on 2017/6/12.
  */
 
-public class OrderDetailActivity extends Activity implements Observer{
+public class OrderDetailActivity extends Activity implements Observer {
     @Bind(R.id.iv_order_detail_back)
     ImageView mIvOrderDetailBack;
     @Bind(R.id.tv_seller_name)
@@ -39,8 +43,11 @@ public class OrderDetailActivity extends Activity implements Observer{
     LinearLayout mLlOrderDetailTypeContainer;
     @Bind(R.id.ll_order_detail_type_point_container)
     LinearLayout mLlOrderDetailTypePointContainer;
+    @Bind(R.id.map)
+    MapView mapView;
     private String mOrderId;
     private String mType;
+    private AMap aMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,15 +57,58 @@ public class OrderDetailActivity extends Activity implements Observer{
         processIntent();
         //添加到观察者中
         OrderObservable.getInstance().addObserver(this);
+
+        mapView.onCreate(savedInstanceState);
+
+        init();
+    }
+
+    private void init() {
+        if(aMap == null) {
+            aMap = mapView.getMap();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
     private void processIntent() {
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             mOrderId = getIntent().getStringExtra("orderId");
             mType = getIntent().getStringExtra("type");
             int index = getIndex(mType);
 
-            if(index != -1) {
+            if (index != -1) {
                 ((TextView) mLlOrderDetailTypeContainer.getChildAt(index))
                         .setTextColor(Color.BLUE);
                 ((ImageView) mLlOrderDetailTypePointContainer.getChildAt(index))
@@ -115,14 +165,25 @@ public class OrderDetailActivity extends Activity implements Observer{
         String pushOrderId = data.get("orderId");
         String pushType = data.get("type");
 
-        if(mOrderId.equals(pushOrderId)) {
+        if (mOrderId.equals(pushOrderId)) {
             //如果是这一单
+            mType = pushType;
+
             int index = getIndex(pushType);
-            if(index != -1) {
+            if (index != -1) {
                 ((TextView) mLlOrderDetailTypeContainer.getChildAt(index))
                         .setTextColor(Color.BLUE);
                 ((ImageView) mLlOrderDetailTypePointContainer.getChildAt(index))
                         .setImageResource(R.drawable.order_time_node_disabled);
+            }
+
+            //如果商家接了单，显示商家位置
+            if (mType.equals(OrderObservable.ORDERTYPE_RECEIVEORDER)) {
+                mapView.setVisibility(View.VISIBLE);
+
+                aMap.moveCamera(CameraUpdateFactory.newLatLng
+                        (new LatLng(22.5788340000, 113.9216700000)));
+                aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
             }
         }
     }
