@@ -51,6 +51,13 @@ public class OrderObservable extends Observable {
             String type = jsonObject.getString("type");
             map.put("orderId", orderId);
             map.put("type", type);
+            if(jsonObject.has("lat")) {
+                //是否有经度值
+                String lat = jsonObject.getString("lat");
+                String lnt = jsonObject.getString("lnt");
+                map.put("lat", lat);
+                map.put("lnt", lnt);
+            }
             return map;
         } catch (JSONException e) {
             e.printStackTrace();

@@ -68,7 +68,7 @@ public class OrderDetailActivity extends Activity implements Observer {
     }
 
     private void init() {
-        if(aMap == null) {
+        if (aMap == null) {
             aMap = mapView.getMap();
         }
     }
@@ -169,6 +169,14 @@ public class OrderDetailActivity extends Activity implements Observer {
         String pushOrderId = data.get("orderId");
         String pushType = data.get("type");
 
+        String lat = "";
+        String lnt = "";
+        if (data.containsKey("lat")) {
+            //如果包含lat字段
+            lat = data.get("lat");
+            lnt = data.get("lnt");
+        }
+
         if (mOrderId.equals(pushOrderId)) {
             //如果是这一单
             mType = pushType;
@@ -224,18 +232,20 @@ public class OrderDetailActivity extends Activity implements Observer {
                     break;
                 case OrderObservable.ORDERTYPE_DISTRIBUTION_RIDER_GIVE_MEAL:
                     //骑手送餐
-                    updateRider();
+                    if(!lat.isEmpty()) {
+                        updateRider(Double.parseDouble(lat), Double.parseDouble(lnt));
+                    }
                     break;
             }
 
         }
     }
 
-    private void updateRider() {
+    private void updateRider(double lat, double lnt) {
         mMarker.hideInfoWindow();
-        mMarker.setPosition(new LatLng(22.5774220000,113.922475000));
+        mMarker.setPosition(new LatLng(lat, lnt));
         aMap.moveCamera(CameraUpdateFactory.newLatLng
-                (new LatLng(22.5774220000,113.922475000)));
+                (new LatLng(lat, lnt)));
         aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
     }
 
