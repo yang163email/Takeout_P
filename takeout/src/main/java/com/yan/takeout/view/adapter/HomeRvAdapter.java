@@ -33,9 +33,13 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
     private static final String TAG = "HomeRvAdapter";
 
     private Context mContext;
-    private List<Seller> mDatas = new ArrayList<>();
+//    private List<Seller> mDatas = new ArrayList<>();
     private static final int TYPE_TITLE = 0;
-    private static final int TYPE_SELLER = 1;
+    //广告分隔线
+    private static final int TYPE_DIVISION = 1;
+    private static final int TYPE_SELLER = 2;
+    private List<Seller> mNearbySellerList = new ArrayList<>();
+    private List<Seller> mOtherSellerList = new ArrayList<>();
 
     public HomeRvAdapter(Context context) {
         mContext = context;
@@ -45,6 +49,11 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         if (position == 0) {
             return TYPE_TITLE;
+        } else if (position == mNearbySellerList.size() + 1 ||
+                position - mNearbySellerList.size() - 1 > 0 &&
+                        (position - mNearbySellerList.size() - 1) % 11 == 0) {
+            // TODO: 头布局 附近商家1-10 广告 其他商家1-10 广告 其他商家11-20 广告 其他商家21-30
+            return TYPE_DIVISION;
         } else {
             return TYPE_SELLER;
         }
@@ -57,6 +66,10 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
                 View titleView = LayoutInflater.from(mContext).inflate(R.layout.item_title, null);
                 TitleHolder titleHolder = new TitleHolder(titleView);
                 return titleHolder;
+            case TYPE_DIVISION:
+                View divisionView = LayoutInflater.from(mContext).inflate(R.layout.item_division, null);
+                DivisionHolder divisionHolder = new DivisionHolder(divisionView);
+                return divisionHolder;
             case TYPE_SELLER:
                 View sellerView = LayoutInflater.from(mContext).inflate(R.layout.item_seller, null);
                 SellerHolder homeItemHolder = new SellerHolder(sellerView);
@@ -75,25 +88,57 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
 //                TitleHolder titleHolder = (TitleHolder) holder;
 //                titleHolder.setData("我是titleView---------------------");
                 break;
+            case TYPE_DIVISION:
+                DivisionHolder divisionHolder = (DivisionHolder) holder;
+                divisionHolder.setData("我是广告View---------------------");
+                break;
             case TYPE_SELLER:
                 SellerHolder sellerHolder = (SellerHolder) holder;
-                sellerHolder.setData(mDatas.get(position));
+
+                // TODO: 头布局 附近商家1-10 广告 其他商家1-10 广告 其他商家11-20 广告 其他商家21-30
+                if(position < mNearbySellerList.size() + 1) {
+                    //附近商家
+                    int index = position - 1;
+                    sellerHolder.setData(mNearbySellerList.get(index));
+                }else {
+                    //其他商家
+                    int index = position - mNearbySellerList.size() - 2;
+                    index -= index / 11;
+                    sellerHolder.setData(mOtherSellerList.get(index));
+                }
                 break;
         }
     }
 
     @Override
     public int getItemCount() {
-        if (mDatas == null) {
-            return 0;
+        int count = 1;
+
+        if(mNearbySellerList.size() == 0 && mOtherSellerList.size() == 0) {
+            return count;
         }
-        return mDatas.size();
+
+        if(mNearbySellerList.size() > 0) {
+            count += mNearbySellerList.size();
+        }
+
+        if(mOtherSellerList.size() > 0) {
+            count += 1;
+            count += mOtherSellerList.size() + mOtherSellerList.size() / 10;
+            if(mOtherSellerList.size() % 10 == 0) {
+                count -= 1;
+            }
+        }
+
+        return count;
     }
 
     public void setData(List<Seller> nearbySellerList, List<Seller> otherSellerList) {
-        mDatas.clear();
-        mDatas.addAll(nearbySellerList);
-        mDatas.addAll(otherSellerList);
+        mNearbySellerList = nearbySellerList;
+        mOtherSellerList = otherSellerList;
+//        mDatas.clear();
+//        mDatas.addAll(nearbySellerList);
+//        mDatas.addAll(otherSellerList);
         notifyDataSetChanged();
     }
 
@@ -151,7 +196,7 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
                     //有没有店铺商品的缓存
                     boolean hasSelectInfo = false;
                     int sellerId = TakeoutApp.sInstance.queryCacheSelectedInfoBySellerId((int) mSeller.getId());
-                    if(sellerId > 0) {
+                    if (sellerId > 0) {
                         hasSelectInfo = true;
                     }
                     intent.putExtra("hasSelectInfo", hasSelectInfo);
@@ -171,4 +216,16 @@ public class HomeRvAdapter extends RecyclerView.Adapter {
         }
     }
 
+    class DivisionHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.tv_division_title)
+        TextView mTvDivisionTitle;
+
+        DivisionHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
+        public void setData(String s) {
+        }
+    }
 }
